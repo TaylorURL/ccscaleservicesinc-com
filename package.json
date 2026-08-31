@@ -1,7 +1,7 @@
 {
   "name": "ccscaleservicesinc-com",
   "private": true,
-  "version": "2026.35.9",
+  "version": "2026.36.0",
   "description": "Compound Industrial Scale Services Inc: scale calibration, repair, and parts.",
   "type": "module",
   "scripts": {
@@ -18,7 +18,7 @@
     "node": "22.x"
   },
   "dependencies": {
-    "@taylorurl/split-rail": "github:TaylorURL/split-rail#v2026.35.4",
+    "@taylorurl/split-rail": "github:TaylorURL/split-rail#v2026.36.0",
     "lucide-react": "^0.468.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
