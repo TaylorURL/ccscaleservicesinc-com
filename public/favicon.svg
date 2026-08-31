@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <path fill="#2850a0" d="M256 0 512 128V512H0V128Z"/>
+  <path fill="#0898b0" d="M256 0 512 128V512H256Z"/>
+  <g fill="#ffffff">
+    <!-- Finial -->
+    <path d="M256 48C264 66 274 92 276 116 278 142 266 168 261 186L251 186C246 168 234 142 236 116 238 92 248 66 256 48Z"/>
+    <!-- Collar -->
+    <rect x="218" y="196" width="76" height="22" rx="11"/>
+    <!-- Beam -->
+    <path d="M70 240C140 272 200 264 256 264 312 264 372 272 442 240" fill="none" stroke="#ffffff" stroke-width="24" stroke-linecap="round"/>
+    <circle cx="68" cy="238" r="19"/>
+    <circle cx="444" cy="238" r="19"/>
+    <!-- Hangers -->
+    <path d="M68 244 34 350M68 244 104 350" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>
+    <path d="M444 244 478 350M444 244 408 350" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>
+    <!-- Pans -->
+    <path d="M16 350H120C120 376 103 392 82 392H54C33 392 16 376 16 350Z"/>
+    <path d="M392 350H496C496 376 479 392 458 392H430C409 392 392 376 392 350Z"/>
+    <!-- Column and plinth -->
+    <path d="M244 262H268V420H302V458H348V512H164V458H210V420H244Z"/>
+  </g>
+</svg>

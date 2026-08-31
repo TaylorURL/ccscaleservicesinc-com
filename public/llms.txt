@@ -1,0 +1,32 @@
+# Compound Industrial Scale Services
+
+> Compound Industrial Scale Services Inc calibrates, repairs, and maintains industrial and commercial scales from 2070 Holder Rambo Rd, Huffman, TX 77336, and supplies the load cells, indicators, and hardware that go into them. Parts are quoted against the scale make and model rather than priced flat. Phone: 346-885-5159. Email: sales@ccscaleservicesinc.com.
+
+## Pages
+
+- [Services](https://ccscaleservices.com/services): Calibration, Repair and Troubleshooting, Preventive Maintenance, Installation and Setup, Parts and Supplies
+- [Parts catalog](https://ccscaleservices.com/parts): Load Cells, Indicators and Displays, Junction Boxes and Cable, Printers and Supplies, Test Weights, Mounting and Hardware
+- [Quote request](https://ccscaleservices.com/quote): collect parts into one list and send it with the scale details
+- [About](https://ccscaleservices.com/about): who does the work and how it is done
+- [Contact](https://ccscaleservices.com/contact): request service, or call 346-885-5159
+- [Privacy](https://ccscaleservices.com/privacy): what the site stores and what it sends
+- [Terms of use](https://ccscaleservices.com/terms): what a request is, and how the pages may be used
+
+## Parts
+
+- [Shear Beam Load Cell](https://ccscaleservices.com/parts/shear-beam-load-cell): The standard cell under floor scales, tank scales, and most bench platforms.
+- [Single-Point Load Cell](https://ccscaleservices.com/parts/single-point-load-cell): One cell carrying a whole platform, used in bench and counting scales.
+- [Compression Canister Load Cell](https://ccscaleservices.com/parts/compression-canister-load-cell): Sealed high-capacity cells for truck scales and tank weighing.
+- [Double-Ended Beam Load Cell](https://ccscaleservices.com/parts/double-ended-beam-load-cell): Beam cells supported at both ends, common under weighbridges and rail scales.
+- [Digital Weight Indicator](https://ccscaleservices.com/parts/digital-weight-indicator): The scale head. It reads the cells, shows the weight, and feeds printers and host systems.
+- [Remote Display](https://ccscaleservices.com/parts/remote-display): A large second display, so the driver or the operator can read the weight from where they stand.
+- [Summing Junction Box](https://ccscaleservices.com/parts/summing-junction-box): Combines and trims the load cell signals on a multi-cell scale.
+- [Load Cell Cable](https://ccscaleservices.com/parts/load-cell-cable): Shielded cable between the cells, the junction box, and the indicator.
+- [Surge Protection](https://ccscaleservices.com/parts/surge-protection): Protection on the signal and power lines of an outdoor scale.
+- [Ticket Printer](https://ccscaleservices.com/parts/ticket-printer): Prints weight tickets from the indicator at the scale house or the lane.
+- [Printer Ribbons and Ticket Stock](https://ccscaleservices.com/parts/printer-ribbons-and-ticket-stock): The consumables, including custom-printed tickets.
+- [Cast Iron Test Weights](https://ccscaleservices.com/parts/cast-iron-test-weights): Bulk weights for testing floor, truck, and platform scales.
+- [Precision Weight Sets](https://ccscaleservices.com/parts/precision-weight-sets): Class F and laboratory weights for bench, counting, and lab scales.
+- [Load Cell Mounting Kits](https://ccscaleservices.com/parts/load-cell-mounting-kits): The hardware that positions a cell so it takes load the way it was designed to.
+- [Check Rod Assemblies](https://ccscaleservices.com/parts/check-rod-assemblies): Keeps a weighbridge square and in position under traffic.
+- [Leveling Feet and Platform Hardware](https://ccscaleservices.com/parts/leveling-feet-and-platform-hardware): Feet, bumpers, and fasteners for bench and floor scales.

@@ -1,0 +1,52 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Editor directories and files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Secrets and local tooling state — never commit
+.env.*
+!.env.example
+.intelligence/
+INTELLIGENCE.md
+# The names the harness resolves are symlinks onto the two above.
+.claude
+CLAUDE.md
+.fleet/
+.junie/
+*.iml
+*.pem
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+
+# Vercel CLI link state (project/org ids) is per-machine.
+.vercel
+
+# Windows folder metadata
+desktop.ini

@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Reads the stored theme before the first paint, so a visitor who chose
+      // dark does not get a white flash on every navigation. Nothing here knows
+      // a colour: it sets the attribute, and the stylesheet does the rest. With
+      // no stored choice the attribute stays off and the system preference wins.
+      (function () {
+        try {
+          var stored = window.localStorage.getItem('ciss.theme.v1');
+          if (stored === 'light' || stored === 'dark' || stored === 'gray') {
+            document.documentElement.setAttribute('data-theme', stored);
+          }
+        } catch (ignored) {}
+      })();
+    </script>
+    <meta
+      name="description"
+      content="Compound Industrial Scale Services is a Huffman, Texas scale company: calibration with certificates, repair, preventive maintenance, load cells, and parts."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://ccscaleservices.com/" />
+    <!-- Static share and identity tags for the fetchers that read the shell
+         without running the app; each route rewrites them as it mounts. The
+         values here are the home route's, because that is the page the shell
+         renders. -->
+    <meta property="og:title" content="Scale Calibration, Repair, and Parts in Huffman, Texas" />
+    <meta
+      property="og:description"
+      content="Compound Industrial Scale Services is a Huffman, Texas scale company: calibration with certificates, repair, preventive maintenance, load cells, and parts."
+    />
+    <meta property="og:url" content="https://ccscaleservices.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Compound Industrial Scale Services Inc" />
+    <meta property="og:image" content="https://ccscaleservices.com/brand/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Compound Industrial Scale Services Inc: scale calibration, repair, and parts"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Scale Calibration, Repair, and Parts in Huffman, Texas" />
+    <meta
+      name="twitter:description"
+      content="Compound Industrial Scale Services is a Huffman, Texas scale company: calibration with certificates, repair, preventive maintenance, load cells, and parts."
+    />
+    <!-- The one external origin the page reaches on an ordinary visit, for the
+         analytics tag attached at the bottom of this head. Name resolution is
+         the whole of it: a preconnect would run the TLS handshake during the
+         load the tag is deliberately kept out of, and the tag is queued to idle
+         anyway, so only the lookup is worth doing early. -->
+    <link rel="dns-prefetch" href="https://gujgtjqqurildqurpffh.supabase.co" />
+    <!-- Both faces are served from this origin and declared in the stylesheet.
+         The stylesheet is discovered a step later than the document, so the two
+         files are asked for here instead of waiting for it. -->
+    <link
+      rel="preload"
+      href="/fonts/inter-latin-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/archivo-latin-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <!-- The photo behind the home hero is the largest thing on the first
+         screen, and the shell names no image, so without this the browser
+         cannot start it until the bundle has run. -->
+    <link
+      rel="preload"
+      as="image"
+      href="/photos/weighbridge-service-1280.webp"
+      imagesrcset="
+        /photos/weighbridge-service-640.webp 640w,
+        /photos/weighbridge-service-960.webp 960w,
+        /photos/weighbridge-service-1280.webp 1280w,
+        /photos/weighbridge-service-1600.webp 1600w"
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
+    <title>Scale Calibration, Repair, and Parts in Huffman, Texas</title>
+    <script type="application/ld+json" id="local-business">
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "@id": "https://ccscaleservices.com/#business",
+        "name": "Compound Industrial Scale Services Inc",
+        "url": "https://ccscaleservices.com",
+        "description": "Scale calibration, repair, and parts for industrial and commercial weighing equipment.",
+        "email": "sales@ccscaleservicesinc.com",
+        "telephone": "346-885-5159",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "2070 Holder Rambo Rd",
+          "addressLocality": "Huffman",
+          "addressRegion": "TX",
+          "postalCode": "77336",
+          "addressCountry": "US"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 30.0958,
+          "longitude": -95.1267
+        }
+      }
+    </script>
+    <script>
+      (function () {
+        var endpoint = 'https://sunday.tail1f78d7.ts.net/report';
+        var site = 'CC Scale Services';
+        var sent = 0;
+        function report(kind, message, stack) {
+          if (sent >= 10) return;
+          sent += 1;
+          try {
+            var body = JSON.stringify({
+              site: site,
+              kind: kind,
+              message: String(message || 'Unknown error').slice(0, 1500),
+              stack: String(stack || '').slice(0, 4000),
+              url: location.href,
+              userAgent: navigator.userAgent,
+            });
+            if (navigator.sendBeacon) {
+              navigator.sendBeacon(endpoint, body);
+            } else {
+              fetch(endpoint, { method: 'POST', body: body, keepalive: true }).catch(
+                function () {}
+              );
+            }
+          } catch (ignored) {}
+        }
+        /*
+         * A tab open across a deploy asks for a chunk filename the host has
+         * replaced, and the browser fails the preload link before the import
+         * rejects. That first failure arrives here with nothing attached to say
+         * the page is about to reload and fix itself, so asset failures wait
+         * instead of reporting at once. src/lib/chunk-recovery.js fires the
+         * refresh event on its way out, which drops them; anything still held
+         * when the wait elapses was a real failure and goes.
+         */
+        var HOLD_MS = 1500;
+        var heldAssets = [];
+        function flushHeldAssets() {
+          var pending = heldAssets.splice(0, heldAssets.length);
+          for (var i = 0; i < pending.length; i += 1) report('resource', pending[i]);
+        }
+        window.addEventListener('ciss:build-refresh', function () {
+          heldAssets.length = 0;
+        });
+        // Leaving for any other reason ends the wait, so a page closed on a
+        // real failure still reports it.
+        window.addEventListener('pagehide', flushHeldAssets);
+        // Capture phase, because element load failures fire error events that do not bubble.
+        window.addEventListener(
+          'error',
+          function (event) {
+            if (event.target && event.target !== window && event.target.tagName) {
+              heldAssets.push(
+                'Failed to load ' +
+                  event.target.tagName.toLowerCase() +
+                  ': ' +
+                  (event.target.src || event.target.href || '')
+              );
+              setTimeout(flushHeldAssets, HOLD_MS);
+            } else {
+              report('uncaught', event.message, event.error && event.error.stack);
+            }
+          },
+          true
+        );
+        window.addEventListener('unhandledrejection', function (event) {
+          var reason = event.reason;
+          report(
+            'rejection',
+            reason && reason.message ? reason.message : reason,
+            reason && reason.stack
+          );
+        });
+        var consoleError = console.error;
+        console.error = function () {
+          var parts = [];
+          for (var i = 0; i < arguments.length; i += 1) {
+            var piece = arguments[i];
+            if (piece && piece.stack) {
+              parts.push(piece.stack);
+            } else if (typeof piece === 'object') {
+              try {
+                parts.push(JSON.stringify(piece));
+              } catch (ignored) {
+                parts.push(String(piece));
+              }
+            } else {
+              parts.push(String(piece));
+            }
+          }
+          report('console', parts.join(' '));
+          return consoleError.apply(console, arguments);
+        };
+        if (window.fetch) {
+          var originalFetch = window.fetch;
+          window.fetch = function (input) {
+            var target = typeof input === 'string' ? input : (input && input.url) || '';
+            if (target.indexOf(endpoint) === 0) return originalFetch.apply(window, arguments);
+            return originalFetch.apply(window, arguments).then(
+              function (response) {
+                if (response.status >= 500)
+                  report('http', 'HTTP ' + response.status + ' from ' + target.split('?')[0]);
+                return response;
+              },
+              function (error) {
+                report(
+                  'network',
+                  (error && error.message ? error.message : String(error)) +
+                    ' fetching ' +
+                    target.split('?')[0]
+                );
+                throw error;
+              }
+            );
+          };
+        }
+      })();
+    </script>
+    <!-- Traffic analytics. The site key is public by design: it says which
+         site a hit belongs to, and the collector accepts it only from this
+         site's own origins.
+         It is attached after the load event rather than with the document,
+         because a deferred script still competes for the connection and the
+         main thread during the load it is measuring. Nothing on the page
+         depends on it, so the hit is worth as much a moment later. -->
+    <script>
+      (function () {
+        var attach = function () {
+          var tag = document.createElement('script');
+          tag.src = 'https://gujgtjqqurildqurpffh.supabase.co/functions/v1/analytics-tracker';
+          tag.setAttribute('data-site', 'sa_3dc9dbb7f5557d9dc04d2125b73c74c2');
+          tag.crossOrigin = 'anonymous';
+          tag.async = true;
+          document.head.appendChild(tag);
+        };
+        // requestIdleCallback waits for a gap in the work rather than for a
+        // fixed delay; Safari has no such gap to offer, so it takes the timer.
+        var queue = function () {
+          if (window.requestIdleCallback) window.requestIdleCallback(attach, { timeout: 3000 });
+          else window.setTimeout(attach, 1200);
+        };
+        if (document.readyState === 'complete') queue();
+        else window.addEventListener('load', queue);
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- The shell a fetcher that runs no scripts is served: the same landmarks,
+         headline, and contact block the app renders, in the site's own classes.
+         React clears the container before its first paint, so this is what the
+         page is until the bundle lands and what it is to anything that never
+         runs one. Every claim in it comes from src/content/company.js and has
+         to move with it. -->
+    <div id="root">
+      <div class="flex min-h-dvh flex-col pb-[var(--rail-height)]">
+        <!-- The same strip the app puts above the bar. -->
+        <div class="utility-bar">
+          <div
+            class="container-page flex flex-wrap items-center justify-between gap-x-6 gap-y-1 py-2 text-xs"
+          >
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-1">
+              <a href="tel:3468855159">346-885-5159</a>
+              <a href="mailto:sales@ccscaleservicesinc.com">sales@ccscaleservicesinc.com</a>
+            </div>
+            <p>2070 Holder Rambo Rd, Huffman, TX 77336</p>
+          </div>
+        </div>
+
+        <header
+          class="sticky top-0 z-sticky-nav border-b border-line-inverse bg-[color:var(--surface-inverse)] text-ink-inverse"
+        >
+          <div class="container-page flex h-header items-center justify-between gap-6">
+            <a href="/" class="flex min-w-0 items-center gap-3">
+              <img
+                src="/brand/mark.svg"
+                alt=""
+                width="40"
+                height="40"
+                class="h-9 w-9 shrink-0 object-contain sm:h-10 sm:w-10"
+              />
+              <span
+                class="font-display text-sm font-extrabold leading-tight tracking-tight text-ink-inverse sm:text-base lg:text-lg"
+                >Compound Industrial Scale Services</span
+              >
+            </a>
+            <!-- The app's two panel triggers, built on <details> so they open
+                 with no script behind them. Closed, the row is the bar the app
+                 renders; opened, it reaches the same ten destinations, which a
+                 fetcher that runs no scripts would otherwise have to find from
+                 the catalog pages one hop further on.
+
+                 The two lists between the markers are written by
+                 scripts/generate-crawl-files.mjs from the same content modules
+                 the app renders, so a service or a category added there cannot
+                 be missing here. -->
+            <nav aria-label="Main" class="hidden items-center gap-7 md:flex">
+              <details class="relative">
+                <summary
+                  class="flex list-none cursor-pointer items-center gap-1 font-display text-sm font-bold tracking-wide [&::-webkit-details-marker]:hidden"
+                >
+                  Services
+                </summary>
+                <div
+                  class="nav-panel absolute left-1/2 top-full z-dropdown mt-2 grid w-[44rem] max-w-[calc(100vw-2.5rem)] -translate-x-1/2 gap-6 rounded-lg border border-line-inverse bg-[color:var(--surface-inverse)] p-5 shadow-card-hover md:grid-cols-[1.35fr_1fr]"
+                >
+                  <div class="flex flex-col gap-1">
+                    <p
+                      class="px-3 pb-1 font-display text-micro font-bold uppercase tracking-eyebrow text-ink-inverse-faint"
+                    >
+                      What We Do
+                    </p>
+                    <ul class="flex flex-col" id="shell-services">
+                    <li>
+                      <a class="block rounded-md px-3 py-2" href="/services#calibration">
+                        <span class="font-display text-sm font-bold text-ink-inverse"
+                          >Calibration</span
+                        >
+                        <span class="block text-xs leading-snug text-ink-inverse-muted"
+                          >On-site calibration against certified test weights, with a certificate for your records.</span
+                        >
+                      </a>
+                    </li>
+                    <li>
+                      <a class="block rounded-md px-3 py-2" href="/services#repair">
+                        <span class="font-display text-sm font-bold text-ink-inverse"
+                          >Repair and Troubleshooting</span
+                        >
+                        <span class="block text-xs leading-snug text-ink-inverse-muted"
+                          >For scales that read wrong, read nothing, or read differently every time.</span
+                        >
+                      </a>
+                    </li>
+                    <li>
+                      <a class="block rounded-md px-3 py-2" href="/services#preventive-maintenance">
+                        <span class="font-display text-sm font-bold text-ink-inverse"
+                          >Preventive Maintenance</span
+                        >
+                        <span class="block text-xs leading-snug text-ink-inverse-muted"
+                          >Scheduled inspection and calibration, monthly through annual.</span
+                        >
+                      </a>
+                    </li>
+                    <li>
+                      <a class="block rounded-md px-3 py-2" href="/services#installation">
+                        <span class="font-display text-sm font-bold text-ink-inverse"
+                          >Installation and Setup</span
+                        >
+                        <span class="block text-xs leading-snug text-ink-inverse-muted"
+                          >New scale installation, configuration, and verification before it goes into service.</span
+                        >
+                      </a>
+                    </li>
+                  </ul>
+                  </div>
+                  <a class="btn btn-md btn-ghost-light self-start" href="/contact"
+                    >Request Service</a
+                  >
+                </div>
+              </details>
+              <details class="relative">
+                <summary
+                  class="flex list-none cursor-pointer items-center gap-1 font-display text-sm font-bold tracking-wide [&::-webkit-details-marker]:hidden"
+                >
+                  Parts
+                </summary>
+                <div
+                  class="nav-panel absolute left-1/2 top-full z-dropdown mt-2 grid w-[44rem] max-w-[calc(100vw-2.5rem)] -translate-x-1/2 gap-6 rounded-lg border border-line-inverse bg-[color:var(--surface-inverse)] p-5 shadow-card-hover md:grid-cols-[1.35fr_1fr]"
+                >
+                  <div class="flex flex-col gap-1">
+                    <p
+                      class="px-3 pb-1 font-display text-micro font-bold uppercase tracking-eyebrow text-ink-inverse-faint"
+                    >
+                      Parts by Category
+                    </p>
+                    <ul class="flex flex-col" id="shell-parts">
+                    <li>
+                      <a class="block rounded-md px-3 py-2" href="/parts#load-cells">
+                        <span class="font-display text-sm font-bold text-ink-inverse"
+                          >Load Cells</span
+                        >
+                        <span class="block text-xs leading-snug text-ink-inverse-muted"
+                          >The sensor under the scale. Most accuracy problems trace back to one of these.</span
+                        >
+                      </a>
+                    </li>
+                    <li>
+                      <a class="block rounded-md px-3 py-2" href="/parts#indicators">
+                        <span class="font-display text-sm font-bold text-ink-inverse"
+                          >Indicators and Displays</span
+                        >
+                        <span class="block text-xs leading-snug text-ink-inverse-muted"
+                          >The head that reads the cells and drives the printer, the remote display, and the host system.</span
+                        >
+                      </a>
+                    </li>
+                    <li>
+                      <a class="block rounded-md px-3 py-2" href="/parts#junction-boxes-and-cable">
+                        <span class="font-display text-sm font-bold text-ink-inverse"
+                          >Junction Boxes and Cable</span
+                        >
+                        <span class="block text-xs leading-snug text-ink-inverse-muted"
+                          >Where the signals from several cells are combined, and the wiring that carries them to the indicator.</span
+                        >
+                      </a>
+                    </li>
+                    <li>
+                      <a class="block rounded-md px-3 py-2" href="/parts#printers-and-supplies">
+                        <span class="font-display text-sm font-bold text-ink-inverse"
+                          >Printers and Supplies</span
+                        >
+                        <span class="block text-xs leading-snug text-ink-inverse-muted"
+                          >Ticket printers and the consumables that keep them running.</span
+                        >
+                      </a>
+                    </li>
+                    <li>
+                      <a class="block rounded-md px-3 py-2" href="/parts#test-weights">
+                        <span class="font-display text-sm font-bold text-ink-inverse"
+                          >Test Weights</span
+                        >
+                        <span class="block text-xs leading-snug text-ink-inverse-muted"
+                          >Certified weights for calibration, and for your own accuracy checks between visits.</span
+                        >
+                      </a>
+                    </li>
+                    <li>
+                      <a class="block rounded-md px-3 py-2" href="/parts#mounting-and-hardware">
+                        <span class="font-display text-sm font-bold text-ink-inverse"
+                          >Mounting and Hardware</span
+                        >
+                        <span class="block text-xs leading-snug text-ink-inverse-muted"
+                          >Mounting kits, check rods, and the hardware that holds a weighbridge square.</span
+                        >
+                      </a>
+                    </li>
+                  </ul>
+                  </div>
+                  <a class="btn btn-md btn-ghost-light self-start" href="/parts"
+                    >Browse All Parts</a
+                  >
+                </div>
+              </details>
+              <a href="/about" class="font-display text-sm font-bold tracking-wide">About</a>
+              <a href="/contact" class="font-display text-sm font-bold tracking-wide">Contact</a>
+            </nav>
+          </div>
+        </header>
+
+        <main class="flex-1">
+          <section class="bg-surface-inverse">
+            <div
+              class="container-page flex flex-col items-start gap-10 pb-24 pt-16 lg:pb-32 lg:pt-24"
+            >
+              <div class="flex flex-col items-start gap-6">
+                <div class="flex flex-col items-start gap-3">
+                  <p class="eyebrow text-accent-inverse">Industrial and commercial weighing</p>
+                  <h1
+                    class="max-w-4xl text-4xl leading-tight text-ink-inverse sm:text-5xl lg:text-6xl"
+                  >
+                    Scales that read right, and parts that fit.
+                  </h1>
+                </div>
+                <p class="max-w-prose text-lg leading-relaxed text-ink-inverse-muted">
+                  Calibration with certificates, repairs on what you already run, and a parts
+                  counter, out of Huffman, Texas.
+                </p>
+              </div>
+              <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                <a href="/contact" class="btn btn-lg btn-primary">Request Service</a>
+                <a href="/parts" class="btn btn-lg btn-ghost-light">Browse Parts</a>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <footer class="bg-surface-inverse pb-5 pt-14 text-ink-inverse-muted">
+          <div class="container-page flex flex-col gap-10">
+            <address class="flex flex-col gap-3 text-sm not-italic">
+              <span class="font-display font-bold text-ink-inverse"
+                >Compound Industrial Scale Services Inc</span
+              >
+              <span>2070 Holder Rambo Rd, Huffman, TX 77336</span>
+              <a href="tel:3468855159">346-885-5159</a>
+              <a href="mailto:sales@ccscaleservicesinc.com">sales@ccscaleservicesinc.com</a>
+            </address>
+            <nav aria-label="Site" class="flex flex-wrap gap-5 text-xs text-ink-inverse-faint">
+              <a href="/quote">Quote List</a>
+              <a href="/about">About</a>
+              <a href="/contact">Contact</a>
+              <a href="/privacy">Privacy</a>
+              <a href="/terms">Terms</a>
+            </nav>
+          </div>
+        </footer>
+
+        <!-- The same rail the app pins to the bottom edge on a phone. -->
+        <div class="action-rail">
+          <div class="container-page grid grid-cols-2 gap-3 py-2">
+            <a href="tel:3468855159" class="btn btn-md btn-steel">Call</a>
+            <a href="/contact" class="btn btn-md btn-primary">Request Service</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

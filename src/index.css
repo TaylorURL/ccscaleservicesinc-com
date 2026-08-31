@@ -1,0 +1,975 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Both faces are served from this origin. A font host is a second DNS lookup, a
+ * second TLS handshake, and a stylesheet that blocks the first paint, all before
+ * a byte of the face itself is asked for; the two files below are 83KB together
+ * and arrive on the connection the page is already using.
+ *
+ * Each is the variable latin cut, so one file covers every weight the site sets
+ * rather than one file per weight. The unicode-range is the same latin block the
+ * font host serves, so a character outside it still falls through to the stack
+ * instead of being drawn from a face that has no glyph for it.
+ */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter-latin-variable.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/archivo-latin-variable.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/**
+ * The two faces the text is set in while the real ones are still arriving. Each
+ * is the local grotesque re-metricked to occupy the same space as the face it
+ * stands in for: the ratios come from the average advance across the character
+ * set the site actually uses, measured against Arial, and the ascent and descent
+ * are divided back through that ratio so the line box does not move either.
+ *
+ * `font-display: swap` without this is a page that reflows every line the moment
+ * the face lands, which is layout shift the loading strategy caused.
+ */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Helvetica');
+  font-display: swap;
+  size-adjust: 104.97%;
+  ascent-override: 92.29%;
+  descent-override: 22.98%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Helvetica');
+  font-display: swap;
+  size-adjust: 103.53%;
+  ascent-override: 84.8%;
+  descent-override: 20.28%;
+  line-gap-override: 0%;
+}
+
+/**
+ * Three layers, in the order a value travels: primitives hold the raw ramps and
+ * the shapes built from them, and never change; semantics name what a value is
+ * for and are the only layer a theme rewrites; the component classes further
+ * down reference the semantics and never a primitive. That middle layer is what
+ * makes the three themes possible, so a component reaching past it to
+ * --steel-700 is a bug.
+ *
+ * Both color ramps come from the company logo: a shield split into royal blue
+ * and teal. Steel is the structural color, anchored to the logo's blue at 700.
+ * Teal is the accent, anchored to the logo's teal at 500, with 600 darkened to
+ * hold AA contrast under white button text. Teal is reserved for the one action
+ * that matters on a page; spreading it across accents and borders is what would
+ * cost the calls to action their pull.
+ *
+ * The red ramp is named for the hue rather than for the state, so the three
+ * themes can each point --danger at a different step of it while the state token
+ * itself still resolves one way.
+ */
+:root {
+  --steel-50: #f2f5fb;
+  --steel-100: #e3eaf6;
+  --steel-200: #c7d4ee;
+  --steel-300: #a0b5e1;
+  --steel-400: #7492cd;
+  --steel-500: #5273b9;
+  --steel-600: #3f5f9f;
+  --steel-700: #2850a0;
+  --steel-800: #22417f;
+  --steel-900: #1a3161;
+  --steel-950: #0f1d3c;
+
+  --teal-300: #79d1e0;
+  --teal-400: #3bb6cb;
+  --teal-500: #0898b0;
+  --teal-600: #077d92;
+  --teal-700: #066374;
+
+  --red-50: #fef2f2;
+  --red-200: #f4a3a3;
+  --red-300: #fca5a5;
+  --red-600: #b91c1c;
+  --red-900: #33201f;
+  --red-950: #35181b;
+
+  /* The sticky header, the anchor offsets, and the sub-nav that parks under it
+     all have to agree on one number, so there is one number. The utility strip
+     above the bar is not in it: the strip scrolls away and the bar is what
+     sticks, so a page offsetting against this offsets against what is actually
+     covering it. */
+  --header-height: 4rem;
+
+  /* One height for every control on the site. A button beside an input at a
+     different height is the most visible tuning miss on a form, and it happens
+     whenever each rule picks its own number. 44px is also the touch floor, so
+     the shared value is the accessible one. */
+  --control-height: 2.75rem;
+
+  /* The action rail pinned to the bottom edge on a phone. The page reserves
+     this much beneath its last element, so the rail sits over the gap it asked
+     for rather than over the end of the content. Zero past the breakpoint that
+     drops the rail, so the reservation disappears with the thing it was for. */
+  --rail-height: 4rem;
+
+  /* One stacking order for the whole site, named by what sits at each step. A
+     raw number decided at the point of use is a number nobody can compare
+     against the others, which is how a menu ends up under the bar it opened
+     from. The in-page sub-nav sits below the header so the two stack instead of
+     overlapping, and the flyout the header opens sits between them. */
+  --layer-behind: -1;
+  --layer-base: 0;
+  --layer-sticky: 30;
+  --layer-dropdown: 40;
+  --layer-sticky-nav: 50;
+  --layer-overlay: 60;
+  --layer-modal: 70;
+  --layer-toast: 80;
+
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  /* The stock CSS easings are too weak to read as intentional at 150-200ms.
+     One curve, referenced everywhere, is the whole motion vocabulary. */
+  --ease-quart-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* The shapes are drawn once here and colored per theme by the stops below,
+     so a gradient's geometry cannot drift between themes. */
+  --surface-inverse-wash: linear-gradient(
+    140deg,
+    var(--wash-1) 0%,
+    var(--wash-2) 45%,
+    var(--wash-3) 100%
+  );
+  --surface-scrim: linear-gradient(
+    100deg,
+    var(--scrim-1) 0%,
+    var(--scrim-2) 45%,
+    var(--scrim-3) 100%
+  );
+  --grid-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+
+  /* Chrome and Safari paint an autofilled field with their own background, and
+     it survives background-color. An inset shadow the size of the field is what
+     covers it, so it is a shadow the scale knows about rather than a one-off. */
+  --autofill-cover: 0 0 0 100px var(--surface-field) inset;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-height: 5rem;
+    --rail-height: 0rem;
+  }
+}
+
+/**
+ * Light. White paper, steel type, one teal action. The dark bands - hero, page
+ * header, footer - are a brand surface rather than a theme surface: they stay
+ * dark in all three themes and carry their own ink tokens, so the same markup
+ * reads correctly whichever theme is on.
+ */
+:root {
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: var(--steel-50);
+  --surface-field: #ffffff;
+  /* The sticky header lets the page show through; a flat surface token cannot
+     do that, so the veil is its own value in every theme. */
+  --surface-veil: rgba(255, 255, 255, 0.72);
+  --surface-inverse: var(--steel-950);
+  --wash-1: #0f1d3c;
+  --wash-2: #1a3161;
+  --wash-3: #234a94;
+  --scrim-1: rgba(15, 29, 60, 0.94);
+  --scrim-2: rgba(26, 49, 97, 0.84);
+  --scrim-3: rgba(26, 49, 97, 0.5);
+  --grid-line: rgba(255, 255, 255, 0.05);
+
+  --ink: var(--steel-900);
+  --ink-body: var(--steel-800);
+  --ink-muted: var(--steel-600);
+  --ink-faint: var(--steel-500);
+  --ink-inverse: #ffffff;
+  --ink-inverse-muted: var(--steel-200);
+  --ink-inverse-faint: var(--steel-400);
+
+  --line: var(--steel-100);
+  --line-strong: var(--steel-200);
+  /* A control boundary is a UI boundary, so it answers to 3:1 rather than to
+     the hairline used between rows. */
+  --line-field: #6d8cc9;
+  --line-inverse: rgba(255, 255, 255, 0.14);
+  --line-inverse-strong: rgba(255, 255, 255, 0.45);
+
+  --accent: var(--teal-600);
+  --accent-hover: var(--teal-700);
+  /* An accent fill and accent-colored text need different values on a light
+     ground: teal-600 clears AA under white button text but lands at 4.4 against
+     the tinted band, which is under the bar for text. */
+  --accent-text: var(--teal-700);
+  --accent-ink: #ffffff;
+  --accent-inverse: var(--teal-300);
+
+  /* The neutral button: the steel counterpart to the teal action, for the
+     second-most-important thing on a page. */
+  --action: var(--steel-800);
+  --action-hover: var(--steel-900);
+  --action-ink: #ffffff;
+
+  /* The wordmark keeps the logo's own blue on a light ground and lifts to a
+     legible step on a dark one, because a mark is a brand asset before it is a
+     piece of type. */
+  --wordmark: var(--steel-700);
+  --wordmark-sub: var(--steel-500);
+
+  --danger: var(--red-600);
+  --danger-surface: var(--red-50);
+  --danger-ring: var(--red-ring);
+  --red-ring: rgba(185, 28, 28, 0.2);
+
+  --focus: var(--teal-500);
+  --field-ring: rgba(82, 115, 185, 0.2);
+  --selection: rgba(8, 152, 176, 0.24);
+  --placeholder-fill: var(--steel-100);
+  --brand-plate: #ffffff;
+  /* The dim the page takes while the menu sits open over it, in the same hue
+     as the theme's scrim so the two read as one family. */
+  --overlay: rgba(15, 29, 60, 0.36);
+
+  --shadow-card: 0 1px 2px rgba(11, 24, 38, 0.04), 0 8px 24px -12px rgba(11, 24, 38, 0.16);
+  --shadow-card-hover: 0 4px 6px rgba(11, 24, 38, 0.06), 0 18px 40px -16px rgba(11, 24, 38, 0.26);
+}
+
+/**
+ * Dark is designed rather than inverted: the surfaces step up from the page
+ * ground instead of down, the accent moves to the 400 step because teal-600 goes
+ * muddy on a dark ground, and the ink on an accent fill turns dark so the label
+ * still clears contrast. The dark bands go darker than the page, so they keep
+ * reading as bands.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --surface: #0a1428;
+    --surface-raised: #13203f;
+    --surface-sunken: #0e1a35;
+    --surface-field: #16244a;
+    --surface-veil: rgba(10, 20, 40, 0.7);
+    --surface-inverse: #060d1c;
+    --wash-1: #060d1c;
+    --wash-2: #0f1d3c;
+    --wash-3: #1a3161;
+    --scrim-1: rgba(4, 10, 22, 0.94);
+    --scrim-2: rgba(10, 20, 40, 0.86);
+    --scrim-3: rgba(15, 29, 60, 0.58);
+    --grid-line: rgba(255, 255, 255, 0.04);
+
+    --ink: #eef3fc;
+    --ink-body: #cdd9ef;
+    --ink-muted: #a2b4d6;
+    --ink-faint: #8296bd;
+    --ink-inverse: #f4f8ff;
+    --ink-inverse-muted: #b6c6e4;
+    --ink-inverse-faint: #8ba0c8;
+
+    --line: #22325a;
+    --line-strong: #33477a;
+    --line-field: #5271ab;
+    --line-inverse: rgba(255, 255, 255, 0.12);
+    --line-inverse-strong: rgba(255, 255, 255, 0.4);
+
+    --accent: var(--teal-400);
+    --accent-hover: var(--teal-300);
+    --accent-text: var(--teal-400);
+    --accent-ink: #04222a;
+    --accent-inverse: var(--teal-300);
+
+    --action: var(--steel-600);
+    --action-hover: var(--steel-500);
+    --action-ink: #ffffff;
+
+    --wordmark: #8fb0ee;
+    --wordmark-sub: #7f93bd;
+
+    --danger: var(--red-300);
+    --danger-surface: var(--red-950);
+    --danger-ring: var(--red-ring);
+    --red-ring: rgba(252, 165, 165, 0.24);
+
+    --focus: var(--teal-400);
+    --field-ring: rgba(59, 182, 203, 0.24);
+    --selection: rgba(59, 182, 203, 0.3);
+    --placeholder-fill: #1b2b50;
+    --brand-plate: #ffffff;
+    --overlay: rgba(4, 10, 22, 0.6);
+
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+    --shadow-card-hover: 0 4px 6px rgba(0, 0, 0, 0.45), 0 18px 40px -16px rgba(0, 0, 0, 0.8);
+  }
+}
+
+:root[data-theme='dark'] {
+  --surface: #0a1428;
+  --surface-raised: #13203f;
+  --surface-sunken: #0e1a35;
+  --surface-field: #16244a;
+  --surface-veil: rgba(10, 20, 40, 0.7);
+  --surface-inverse: #060d1c;
+  --wash-1: #060d1c;
+  --wash-2: #0f1d3c;
+  --wash-3: #1a3161;
+  --scrim-1: rgba(4, 10, 22, 0.94);
+  --scrim-2: rgba(10, 20, 40, 0.86);
+  --scrim-3: rgba(15, 29, 60, 0.58);
+  --grid-line: rgba(255, 255, 255, 0.04);
+
+  --ink: #eef3fc;
+  --ink-body: #cdd9ef;
+  --ink-muted: #a2b4d6;
+  --ink-faint: #8296bd;
+  --ink-inverse: #f4f8ff;
+  --ink-inverse-muted: #b6c6e4;
+  --ink-inverse-faint: #8ba0c8;
+
+  --line: #22325a;
+  --line-strong: #33477a;
+  --line-field: #5271ab;
+  --line-inverse: rgba(255, 255, 255, 0.12);
+  --line-inverse-strong: rgba(255, 255, 255, 0.4);
+
+  --accent: var(--teal-400);
+  --accent-hover: var(--teal-300);
+  --accent-text: var(--teal-400);
+  --accent-ink: #04222a;
+  --accent-inverse: var(--teal-300);
+
+  --action: var(--steel-600);
+  --action-hover: var(--steel-500);
+  --action-ink: #ffffff;
+
+  --wordmark: #8fb0ee;
+  --wordmark-sub: #7f93bd;
+
+  --danger: var(--red-300);
+  --danger-surface: var(--red-950);
+  --danger-ring: var(--red-ring);
+  --red-ring: rgba(252, 165, 165, 0.24);
+
+  --focus: var(--teal-400);
+  --field-ring: rgba(59, 182, 203, 0.24);
+  --selection: rgba(59, 182, 203, 0.3);
+  --placeholder-fill: #1b2b50;
+  --brand-plate: #ffffff;
+  --overlay: rgba(4, 10, 22, 0.6);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+  --shadow-card-hover: 0 4px 6px rgba(0, 0, 0, 0.45), 0 18px 40px -16px rgba(0, 0, 0, 0.8);
+}
+
+/**
+ * Gray drops the blue cast out of the neutrals and keeps only a trace of it, so
+ * it reads as a workshop grey rather than as a dimmed navy. The accent survives
+ * the move because teal is the one hue that does not belong to the neutral ramp.
+ */
+:root[data-theme='gray'] {
+  --surface: #1b1e23;
+  --surface-raised: #24282f;
+  --surface-sunken: #17191d;
+  --surface-field: #262b33;
+  --surface-veil: rgba(27, 30, 35, 0.72);
+  --surface-inverse: #101215;
+  --wash-1: #101215;
+  --wash-2: #1b1e23;
+  --wash-3: #2b323c;
+  --scrim-1: rgba(11, 13, 16, 0.94);
+  --scrim-2: rgba(23, 25, 29, 0.86);
+  --scrim-3: rgba(34, 38, 45, 0.58);
+  --grid-line: rgba(255, 255, 255, 0.05);
+
+  --ink: #f2f4f7;
+  --ink-body: #d3d8e0;
+  --ink-muted: #a7aeba;
+  --ink-faint: #8b93a0;
+  --ink-inverse: #f7f8fa;
+  --ink-inverse-muted: #c3c9d3;
+  --ink-inverse-faint: #9aa2ae;
+
+  --line: #31363f;
+  --line-strong: #454c57;
+  --line-field: #6d7685;
+  --line-inverse: rgba(255, 255, 255, 0.12);
+  --line-inverse-strong: rgba(255, 255, 255, 0.4);
+
+  --accent: #33b3c8;
+  --accent-hover: #6fcede;
+  --accent-text: #33b3c8;
+  --accent-ink: #06222a;
+  --accent-inverse: #6fcede;
+
+  --action: #3a414c;
+  --action-hover: #464e5b;
+  --action-ink: #f2f4f7;
+
+  --wordmark: #e8ebf0;
+  --wordmark-sub: #9aa2ae;
+
+  --danger: var(--red-200);
+  --danger-surface: var(--red-900);
+  --danger-ring: var(--red-ring);
+  --red-ring: rgba(244, 163, 163, 0.24);
+
+  --focus: #33b3c8;
+  --field-ring: rgba(51, 179, 200, 0.24);
+  --selection: rgba(51, 179, 200, 0.28);
+  --placeholder-fill: #2f353e;
+  --brand-plate: #ffffff;
+  --overlay: rgba(11, 13, 16, 0.6);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -12px rgba(0, 0, 0, 0.68);
+  --shadow-card-hover: 0 4px 6px rgba(0, 0, 0, 0.45), 0 18px 40px -16px rgba(0, 0, 0, 0.78);
+}
+
+/* An explicit choice of light has to beat the system preference above. */
+:root[data-theme='light'] {
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: var(--steel-50);
+  --surface-field: #ffffff;
+  --surface-veil: rgba(255, 255, 255, 0.72);
+  --surface-inverse: var(--steel-950);
+  --wash-1: #0f1d3c;
+  --wash-2: #1a3161;
+  --wash-3: #234a94;
+  --scrim-1: rgba(15, 29, 60, 0.94);
+  --scrim-2: rgba(26, 49, 97, 0.84);
+  --scrim-3: rgba(26, 49, 97, 0.5);
+  --grid-line: rgba(255, 255, 255, 0.05);
+
+  --ink: var(--steel-900);
+  --ink-body: var(--steel-800);
+  --ink-muted: var(--steel-600);
+  --ink-faint: var(--steel-500);
+  --ink-inverse: #ffffff;
+  --ink-inverse-muted: var(--steel-200);
+  --ink-inverse-faint: var(--steel-400);
+
+  --line: var(--steel-100);
+  --line-strong: var(--steel-200);
+  --line-field: #6d8cc9;
+  --line-inverse: rgba(255, 255, 255, 0.14);
+  --line-inverse-strong: rgba(255, 255, 255, 0.45);
+
+  --accent: var(--teal-600);
+  --accent-hover: var(--teal-700);
+  --accent-text: var(--teal-700);
+  --accent-ink: #ffffff;
+  --accent-inverse: var(--teal-300);
+
+  --action: var(--steel-800);
+  --action-hover: var(--steel-900);
+  --action-ink: #ffffff;
+
+  --wordmark: var(--steel-700);
+  --wordmark-sub: var(--steel-500);
+
+  --danger: var(--red-600);
+  --danger-surface: var(--red-50);
+  --danger-ring: var(--red-ring);
+  --red-ring: rgba(185, 28, 28, 0.2);
+
+  --focus: var(--teal-500);
+  --field-ring: rgba(82, 115, 185, 0.2);
+  --selection: rgba(8, 152, 176, 0.24);
+  --placeholder-fill: var(--steel-100);
+  --brand-plate: #ffffff;
+  --overlay: rgba(15, 29, 60, 0.36);
+
+  --shadow-card: 0 1px 2px rgba(11, 24, 38, 0.04), 0 8px 24px -12px rgba(11, 24, 38, 0.16);
+  --shadow-card-hover: 0 4px 6px rgba(11, 24, 38, 0.06), 0 18px 40px -16px rgba(11, 24, 38, 0.26);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Set at the root rather than left to a body utility, so every portal and
+       overlay inherits the same rendering. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Clipped rather than hidden: hidden on a scroll container silently breaks
+       every sticky descendant, and the sticky header is one. */
+    overflow-x: clip;
+    /* The sticky header would otherwise land on top of every anchor target. */
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+  }
+
+  body {
+    @apply bg-surface font-sans text-ink antialiased;
+    overflow-x: clip;
+    /* An email address, a model number, or a street address is one unbreakable
+       token. At a large text size in a narrow column it is wider than the column,
+       and without this it pushes the page sideways instead of wrapping. */
+    overflow-wrap: break-word;
+  }
+
+  /* A flex or grid child defaults to min-width: auto, which stops it shrinking
+     below its own content. On a page that is mostly flex columns that means one
+     long option label or one wide field sets a floor for the whole column, and
+     at a large text size the layout grows sideways instead of wrapping. :where()
+     keeps the specificity at zero so any utility still overrides it. */
+  :where(.flex, .grid) > * {
+    min-width: 0;
+  }
+
+  /* Anchor targets clear the header on their own too, so a jump lands the
+     heading in view whether or not the browser honors scroll-padding. */
+  section[id],
+  article[id],
+  h2[id],
+  h3[id],
+  /* A failed submit moves focus to the first field that needs work; without this
+     the browser can park it directly under the sticky header. */
+  .field {
+    scroll-margin-top: calc(var(--header-height) + 1.5rem);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-bold tracking-tight text-ink;
+    /* A model number or a hyphenated compound is otherwise wide enough to push
+       a display heading past the viewport on a phone. */
+    overflow-wrap: anywhere;
+    min-width: 0;
+    /* Even lines instead of a stranded last word wherever the engine can. */
+    text-wrap: balance;
+  }
+
+  /* The heading above balances its lines; body copy takes the cheaper rule that
+     only protects the last line, so a paragraph never ends on one short word. */
+  p,
+  li,
+  dd,
+  figcaption {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--selection);
+    color: var(--ink);
+  }
+
+  /* Every clickable thing, named by tag so the affordance does not depend on a
+     class being remembered. touch-manipulation drops the 300ms tap delay; the
+     tap highlight goes because the press states below answer the finger. */
+  a,
+  button,
+  summary,
+  [role='button'],
+  label {
+    @apply touch-manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a,
+  button,
+  summary,
+  [role='button'] {
+    cursor: pointer;
+  }
+
+  /* An icon carries one intrinsic size and cannot reflow, so it must never be
+     the thing that gives up space in a tight row. A label beside it can wrap or
+     truncate; a glyph squeezed to zero width leaves its control rendering as a
+     filled block with nothing in it, which reads as a broken build rather than
+     as a layout fault. The quote button in the header is the tightest case: it
+     hides its label below sm, so the icon is the only thing it has left. */
+  :where(a, button, summary, label, [role='button']) svg {
+    flex-shrink: 0;
+  }
+
+  /* An outline's offset gap is transparent, so the same focus indicator reads on
+     the light pages and on the dark bands. A ring with a surface-colored offset
+     would paint a solid box around anything focused on a dark section. The
+     selectors name their tags rather than relying on a bare :focus-visible, so
+     every control is covered by something that says so. */
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  details:focus-visible,
+  [role='button']:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* Press feedback, as the default rather than as something each control opts
+     into. transform does nothing to a non-replaced inline box, so a link in a
+     paragraph answers with a brief dim and anything box-level takes the scale.
+     .btn declares its own press, and :where() keeps these rules at a specificity
+     a utility can still beat, so nothing here doubles up on a component that
+     already styles its own states. */
+  a:where(:not(.btn)):active {
+    opacity: 0.85;
+  }
+
+  button:where(:not(.btn)):active,
+  summary:active,
+  [role='button']:where(:not(.btn)):active {
+    transform: scale(0.97);
+  }
+
+  /* The hover fallback for anything that does not name its own: a link in prose,
+     the wordmark, the skip link. */
+  a:where(:not(.btn)):hover,
+  button:where(:not(.btn)):hover,
+  summary:hover,
+  [role='button']:where(:not(.btn)):hover {
+    color: var(--accent-text);
+  }
+
+  button:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-box-shadow: var(--autofill-cover);
+    box-shadow: var(--autofill-cover);
+    -webkit-text-fill-color: var(--ink);
+    caret-color: var(--ink);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Motion is removed rather than shortened: state changes still land, they
+     just stop traveling. One query rather than a pair, so there is one place
+     that says what a visitor who asked for less motion gets, and the smooth
+     scroll above is put back to a jump inside it. */
+  @media (prefers-reduced-motion: reduce) {
+    /* The placeholder is the one entrance dropped rather than shortened. Held
+       to a hundredth of a millisecond it still runs, and a fade that runs is a
+       fade: the grey has to be there the instant the placeholder is, not a
+       frame later. It leads the block because it is the exception the blanket
+       rule below would otherwise swallow. */
+    .skeleton-in {
+      animation: none !important;
+    }
+
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    ::before,
+    ::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      /* Staggered entrances lose their delays too, or the items would still
+         trickle in one by one with the travel removed. */
+      animation-delay: 0ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+
+  .eyebrow {
+    @apply font-display text-xs font-bold uppercase tracking-eyebrow text-accent-text;
+  }
+
+  /* The strip above the bar. It holds what a visitor needs before they have
+     chosen a page - the number, the desk to write to, where the trucks go out
+     from - so the bar below is left holding destinations and one action. It
+     scrolls away with the page rather than sticking, which is why the header
+     token does not count it. */
+  .utility-bar {
+    @apply border-b border-line-inverse bg-[color:var(--wash-1)] text-ink-inverse-faint;
+  }
+
+  .utility-bar a {
+    @apply inline-flex items-center gap-2 whitespace-nowrap transition-colors duration-fast hover:text-ink-inverse;
+  }
+
+  /* The bar ActionRail pins to the bottom edge below the large breakpoint. The
+     safe-area padding clears the home indicator on a phone that has one; the
+     height the page reserves for it is --rail-height, which has to move with
+     this rule. */
+  .action-rail {
+    @apply fixed inset-x-0 bottom-0 z-sticky border-t border-line bg-surface-raised lg:hidden;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* A row of facts, at the density of a row of facts. The head column names
+     what each row is about, so the table reads down as well as across, and the
+     hairlines are the same one used between rows everywhere else. */
+  .fact-table {
+    @apply w-full border-collapse text-left text-sm;
+  }
+
+  .fact-table th,
+  .fact-table td {
+    @apply border-b border-line py-3 pr-6 align-top leading-relaxed last:pr-0;
+  }
+
+  .fact-table thead th {
+    @apply font-display text-xs font-bold uppercase tracking-eyebrow text-ink-muted;
+  }
+
+  .fact-table tbody th {
+    @apply font-display font-bold text-ink;
+  }
+
+  .fact-table td {
+    @apply text-ink-muted;
+  }
+
+  /* The transparent border keeps every variant the same box height as the
+     bordered ones, so a primary and an outline button align side by side. The
+     min-height is the 44px touch floor, shared with the fields so a control and
+     the input beside it are the same height. Transitioned properties are named;
+     transform is among them so the press scale animates instead of snapping. */
+  .btn {
+    @apply inline-flex min-h-control select-none items-center justify-center gap-2 rounded border-2 border-transparent font-display text-sm font-bold leading-none tracking-wide transition-[color,background-color,border-color,transform] duration-fast ease-quart-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+
+  .btn-md {
+    @apply px-5 py-2;
+  }
+
+  .btn-primary {
+    @apply bg-accent text-accent-ink hover:bg-accent-hover;
+  }
+
+  .btn-steel {
+    @apply bg-action text-action-ink hover:bg-action-hover;
+  }
+
+  .btn-outline {
+    @apply border-line-field bg-surface-raised text-ink-body hover:border-ink-faint hover:bg-surface-sunken;
+  }
+
+  .btn-ghost-light {
+    @apply border-line-inverse-strong text-ink-inverse hover:border-ink-inverse hover:bg-white/10;
+  }
+
+  .card {
+    @apply rounded-lg border border-line bg-surface-raised shadow-card;
+  }
+
+  /* Only cards that go somewhere get the lift; a hover response on a static
+     card promises a click it cannot honor. The hover: variants are capability
+     gated by hoverOnlyWhenSupported, so a tap on touch does not stick. */
+  .card-lift {
+    @apply transition-[box-shadow,transform] duration-base ease-quart-out hover:-translate-y-0.5 hover:shadow-card-hover;
+  }
+
+  .field-label {
+    @apply block select-none font-display text-xs font-bold uppercase tracking-eyebrow text-ink-muted;
+  }
+
+  /* The field sits on its own surface rather than on the page ground, so it
+     reads as somewhere to type instead of as a bordered label. 16px is the
+     floor: below it iOS zooms the page the moment the field takes focus. Fields
+     own their entire focus look - border plus a soft halo, the same for mouse
+     and keyboard - and focus:outline-none keeps the global ring off them so the
+     two treatments never stack. */
+  /* min-w-0 is what lets a select shrink below the width of its longest option:
+     without it the option list sets a floor that the grid column has to honor,
+     and the whole form grows past the screen at a large text size. */
+  .field {
+    @apply min-h-control w-full min-w-0 rounded border border-line-field px-4 py-2 text-ink transition-[border-color,box-shadow] duration-fast placeholder:text-ink-faint hover:border-ink-faint focus:border-focus;
+    /* The floor is absolute rather than relative, so a page set at a smaller
+       root size still hands iOS a field it will not zoom into. */
+    font-size: max(1rem, 16px);
+    background-color: var(--surface-field);
+    /* Reserved transparent at rest, so taking focus colors an outline that was
+       always there rather than adding one. Building the indicator out of the
+       border instead would move the text by a pixel every time. */
+    outline: 2px solid transparent;
+    outline-offset: 1px;
+  }
+
+  .field:focus-visible {
+    outline-color: var(--focus);
+  }
+
+  /* Invalid is never color alone: the border turns, and the field carries
+     aria-invalid with a message and a marker beside it. */
+  .field[aria-invalid='true'] {
+    @apply border-danger focus:border-danger focus:ring-danger-ring;
+  }
+
+  /* The slot is held whether or not there is a message, so the first error on a
+     form does not push every field below it down the page. */
+  .field-error {
+    @apply flex min-h-[1.25rem] items-start gap-2 text-sm font-medium text-danger;
+  }
+
+  .field-hint {
+    @apply text-sm leading-relaxed text-ink-muted;
+  }
+
+  /* A native select paints its own arrow, in a different place and a different
+     grey on every platform, which is the one control that breaks the set. The
+     platform's option list and its accessibility are kept; only the closed
+     control is restyled, with the chevron drawn beside it from the same icon set
+     as the rest of the site. Extra right padding keeps a long option from
+     running under it. */
+  .field-select {
+    @apply cursor-pointer appearance-none pr-11;
+  }
+
+  /* An icon set beside a line of text is centred on that line's box rather than
+     hung from its own top edge, so it holds its alignment with the first line
+     however many lines follow, without a nudge of its own to maintain. */
+  .icon-lead {
+    @apply flex h-5 shrink-0 items-center;
+  }
+
+  /* An icon is 17px and a finger is not. The control holds the shared 44px
+     floor in both directions whatever the glyph inside it measures. */
+  .icon-btn {
+    @apply inline-flex min-h-control min-w-control select-none items-center justify-center rounded transition-[color,background-color,transform] duration-fast active:scale-95;
+  }
+
+  .field-select-chevron {
+    @apply pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink-faint;
+  }
+
+  .prose-body {
+    @apply max-w-prose leading-relaxed text-ink-muted;
+  }
+
+  /* Scrolls as one row where the screen is narrow and wraps normally once there
+     is room. The negative margin lets the row run to the screen edge, so a chip
+     cut off at the boundary reads as scrollable rather than as a clipped bug. */
+  .chip-rail {
+    @apply -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-x-visible sm:px-0 sm:pb-0;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .chip-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* A section below the first screen costs style, layout, and paint at load
+     whether or not anybody scrolls to it, and this hands all three back to the
+     browser to spend when the reader is approaching the section instead.
+
+     `auto` on the intrinsic size is what keeps it invisible: the browser holds
+     each section's last rendered height and measures the skipped box at that,
+     so scrolling back over a section moves nothing. The length behind it stands
+     in only for the first pass, before the section has ever been drawn, which
+     is why each use names one near its own height.
+
+     Not applied to a section that is an anchor target: the scroll for a
+     fragment in the URL is computed on the first layout, and at that point a
+     skipped section is still its placeholder height. */
+  .section-defer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--section-intrinsic, 32rem);
+  }
+
+  /* The fill that holds an image's box from first paint until the file decodes,
+     so the space is never an empty hole while the network runs. */
+  .media-frame {
+    @apply overflow-hidden bg-placeholder;
+  }
+
+  /* The full lockup is drawn for a light ground, so it is given one in every
+     theme rather than recolored or dropped onto a dark card. The plate paints
+     before the file decodes, which is also what holds the box. */
+  .brand-plate {
+    @apply flex items-center justify-center rounded bg-brand-plate p-5;
+  }
+
+  /* Entrances for elements that appear in place after an interaction: opacity
+     plus a small offset, never from a point, always under 300ms. */
+  .rise-in {
+    animation: rise-in var(--duration-base) var(--ease-quart-out) both;
+  }
+
+  .drop-in {
+    animation: drop-in var(--duration-base) var(--ease-quart-out) both;
+  }
+
+  .pop-in {
+    animation: pop-in var(--duration-fast) var(--ease-quart-out) both;
+  }
+
+  /* For a covering layer - a dim, a scrim - which fades where an element
+     would travel. */
+  .fade-in {
+    animation: fade-in var(--duration-base) var(--ease-quart-out) both;
+  }
+
+  /* A placeholder holding space for content still on the wire. `both` keeps it
+     at zero opacity through the delay, which is longer than a warm cache takes,
+     so a wait nobody would have noticed produces no flash of grey. */
+  .skeleton-in {
+    animation: fade-in var(--duration-base) var(--ease-quart-out) 200ms both;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}

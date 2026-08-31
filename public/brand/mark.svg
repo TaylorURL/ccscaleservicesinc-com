@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Shield: full pentagon in steel, right half overlaid in teal (overlap avoids a seam) -->
+  <path fill="#2850a0" d="M256 0 512 128V512H0V128Z"/>
+  <path fill="#0898b0" d="M256 0 512 128V512H256Z"/>
+  <g fill="#ffffff">
+    <!-- Finial spearhead -->
+    <path d="M256 38C261 50 268 66 271 82 274 102 266 126 260 142L252 142C246 126 238 102 241 82 244 66 251 50 256 38Z"/>
+    <!-- Neck stem -->
+    <rect x="250" y="138" width="12" height="14"/>
+    <!-- Knob -->
+    <ellipse cx="256" cy="159" rx="13" ry="11"/>
+    <!-- Collar discs -->
+    <rect x="224" y="172" width="64" height="13" rx="6.5"/>
+    <rect x="233" y="187" width="46" height="11" rx="5.5"/>
+    <!-- Beam: an S-wave per arm, sagging past the straps and tucking under the collar -->
+    <path d="M57 178C61 205 78 227 108 231 145 236 178 225 205 220 228 216 245 221 256 228 267 221 284 216 307 220 334 225 367 236 404 231 434 227 451 205 455 178" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round"/>
+    <ellipse cx="256" cy="230" rx="10" ry="8"/>
+    <!-- Teardrop curls -->
+    <circle cx="55" cy="170" r="13"/>
+    <circle cx="457" cy="170" r="13"/>
+    <path d="M49 175C58 192 66 210 72 227" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+    <path d="M463 175C454 192 446 210 440 227" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+    <!-- Straps -->
+    <path d="M72 227 35 331M72 227 112 331" fill="none" stroke="#ffffff" stroke-width="6.5" stroke-linecap="round"/>
+    <path d="M440 227 477 331M440 227 400 331" fill="none" stroke="#ffffff" stroke-width="6.5" stroke-linecap="round"/>
+    <!-- Pans -->
+    <path d="M16 332H133C133 350 120 364 103 364H46C29 364 16 350 16 332Z"/>
+    <path d="M379 332H496C496 350 483 364 466 364H409C392 364 379 350 379 332Z"/>
+    <!-- Column and stepped plinth -->
+    <path d="M247 196 248 330C248 392 245 430 229 447H213C209 456 205 464 202 471H179C173 484 167 498 162 512H350C345 498 339 484 333 471H310C307 464 303 456 299 447H283C267 430 264 392 264 330L265 196Z"/>
+  </g>
+</svg>
