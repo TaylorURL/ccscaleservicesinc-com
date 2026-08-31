@@ -1,7 +1,7 @@
 {
   "name": "ccscaleservicesinc-com",
   "private": true,
-  "version": "2026.36.0",
+  "version": "2026.36.1",
   "description": "Compound Industrial Scale Services Inc: scale calibration, repair, and parts.",
   "type": "module",
   "scripts": {
