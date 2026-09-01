@@ -40,7 +40,7 @@ export default function Home() {
             priority rather than left to queue behind the stylesheet. */}
         <img
           src="/photos/weighbridge-service-1280.webp"
-          srcSet="/photos/weighbridge-service-640.webp 640w, /photos/weighbridge-service-960.webp 960w, /photos/weighbridge-service-1280.webp 1280w, /photos/weighbridge-service-1600.webp 1600w"
+          srcSet="/photos/weighbridge-service-640.webp 640w, /photos/weighbridge-service-960.webp 960w, /photos/weighbridge-service-1280.webp 1280w, /photos/weighbridge-service-1440.webp 1440w, /photos/weighbridge-service-1600.webp 1600w"
           // The band runs the full width of the viewport at every breakpoint,
           // so a phone takes the 640 cut and a desktop the one that covers it.
           sizes="100vw"
