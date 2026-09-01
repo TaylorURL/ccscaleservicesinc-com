@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2026.36.1-2850a0?style=for-the-badge" alt="Version 2026.36.1" />
+  <img src="https://img.shields.io/badge/version-2026.36.2-2850a0?style=for-the-badge" alt="Version 2026.36.2" />
   <img src="https://img.shields.io/badge/React-19-2850a0?style=for-the-badge&logo=react&logoColor=white" alt="React 19" />
   <img src="https://img.shields.io/badge/Vite-7-2850a0?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 7" />
   <img src="https://img.shields.io/badge/React_Router-7-0898b0?style=for-the-badge&logo=reactrouter&logoColor=white" alt="React Router 7" />
@@ -214,7 +214,7 @@ Set it to `https://ccscaleservicesinc.com`, redeploy, then add the old domain to
 
 ## License
 
-Copyright (c) 2026 Trenton Taylor. All rights reserved. See [LICENSE.md](LICENSE.md).
+Copyright (c) 2026 TaylorURL LLC. All rights reserved. See [LICENSE.md](LICENSE.md).
 
 <br />
 
