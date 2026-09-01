@@ -5,20 +5,26 @@ import Layout from './components/Layout';
 import RouteFallback from './components/RouteFallback';
 import ScrollToTop from './components/ScrollToTop';
 import { QuoteProvider } from './components/QuoteProvider';
+import Home from './pages/Home';
 import { withBuildRefresh } from './lib/chunk-recovery';
 
 /**
- * Every route is its own chunk. Imported statically, the catalog, both request
- * forms, and the legal text all land in the entry bundle, so a visitor reading
- * the home page waits for code for pages they will never open. Split, each page
- * costs one request at the moment somebody asks for it, and the placeholder
- * below holds the space while it arrives.
+ * Every route but the home page is its own chunk. Imported statically, the
+ * catalog, both request forms, and the legal text all land in the entry bundle,
+ * so a visitor reading the home page waits for code for pages they will never
+ * open. Split, each page costs one request at the moment somebody asks for it,
+ * and the placeholder below holds the space while it arrives.
+ *
+ * The home page is the exception because it is the page most visitors land on,
+ * and a boundary that falls back on the first render paints a placeholder the
+ * height of a skeleton and then a page ten times taller, which shoves the
+ * footer down the screen and counts against the layout shift score. Resolved
+ * synchronously, React's first commit is the finished page.
  *
  * Each loader goes through withBuildRefresh, so a tab still holding the
  * previous build asks for a chunk filename the host has replaced, reloads onto
  * the current document, and lands on the page rather than on an error screen.
  */
-const Home = lazy(withBuildRefresh(() => import('./pages/Home')));
 const Services = lazy(withBuildRefresh(() => import('./pages/Services')));
 const Parts = lazy(withBuildRefresh(() => import('./pages/Parts')));
 const PartDetail = lazy(withBuildRefresh(() => import('./pages/PartDetail')));
