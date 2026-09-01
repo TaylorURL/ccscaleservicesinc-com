@@ -16,6 +16,7 @@ import ThemeToggle from './ThemeToggle';
 import { addressLine, company, hasAddress, phoneHref } from '../content/company';
 import Wordmark from './Wordmark';
 import { iconSize } from '../lib/icon-size';
+import { currentYear } from '../lib/local-time';
 
 const socialLinks = [
   { key: 'facebook', label: 'Facebook', Icon: Facebook },
@@ -23,7 +24,7 @@ const socialLinks = [
 ];
 
 export default function Footer({ children }) {
-  const year = new Date().getFullYear();
+  const year = currentYear();
   const profiles = socialLinks.filter((link) => company.social[link.key]);
 
   return (
