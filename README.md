@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2026.36.2-2850a0?style=for-the-badge" alt="Version 2026.36.2" />
+  <img src="https://img.shields.io/badge/version-2026.36.4-2850a0?style=for-the-badge" alt="Version 2026.36.4" />
   <img src="https://img.shields.io/badge/React-19-2850a0?style=for-the-badge&logo=react&logoColor=white" alt="React 19" />
   <img src="https://img.shields.io/badge/Vite-7-2850a0?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 7" />
   <img src="https://img.shields.io/badge/React_Router-7-0898b0?style=for-the-badge&logo=reactrouter&logoColor=white" alt="React Router 7" />
@@ -187,12 +187,13 @@ Vercel, building from `main`. `vercel.json` rewrites every path to `index.html` 
 
 ### How long each asset caches
 
-Without a `Cache-Control` of its own, Vercel serves a file as `max-age=0, must-revalidate`, so every view of every page goes back to the network for the whole bundle and every photo. `vercel.json` sets three policies instead:
+Without a `Cache-Control` of its own, Vercel serves a file as `max-age=0, must-revalidate`, so every view of every page goes back to the network for the whole bundle and every photo. `vercel.json` sets four policies instead:
 
 | Path | Policy | Why |
 | :--- | :--- | :--- |
 | `/assets/*` | one year, `immutable` | Vite puts a content hash in the filename, so a changed file is a new URL |
 | `/brand/*`, `/photos/*` | one hour, then a week of `stale-while-revalidate` | The filenames are stable, so a replaced photo has to be able to reach a returning visitor |
+| `/fonts/*` | one year, `immutable` | The two woff2 files are 83KB the browser would otherwise revalidate on every visit; the year is what makes a re-subset font a new filename rather than an edit in place |
 | The icons and the manifest | the same hour and week | Same reason, and the same fixed names: `favicon.ico`, `favicon.svg`, `apple-touch-icon.png`, `site.webmanifest`, and the four PNG icons |
 | Everything else | Vercel's default | `index.html` carries the current asset hashes and has to be re-read on every visit for a deploy to land |
 

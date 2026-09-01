@@ -76,8 +76,8 @@
       crossorigin
     />
     <!-- The photo behind the home hero is the largest thing on the first
-         screen, and the shell names no image, so without this the browser
-         cannot start it until the bundle has run. -->
+         screen, and the preload starts it in the head rather than at the point
+         the parser reaches the shell's own markup. -->
     <link
       rel="preload"
       as="image"
@@ -86,6 +86,7 @@
         /photos/weighbridge-service-640.webp 640w,
         /photos/weighbridge-service-960.webp 960w,
         /photos/weighbridge-service-1280.webp 1280w,
+        /photos/weighbridge-service-1440.webp 1440w,
         /photos/weighbridge-service-1600.webp 1600w"
       imagesizes="100vw"
       fetchpriority="high"
@@ -565,9 +566,25 @@
         </header>
 
         <main class="flex-1">
-          <section class="bg-surface-inverse">
+          <section class="relative overflow-hidden bg-surface-inverse">
+            <img
+              src="/photos/weighbridge-service-1280.webp"
+              srcset="
+                /photos/weighbridge-service-640.webp 640w,
+                /photos/weighbridge-service-960.webp 960w,
+                /photos/weighbridge-service-1280.webp 1280w,
+                /photos/weighbridge-service-1440.webp 1440w,
+                /photos/weighbridge-service-1600.webp 1600w"
+              sizes="100vw"
+              alt="A technician in a safety vest steering a test-weight cart across a truck scale at an aggregate yard"
+              width="1600"
+              height="1200"
+              fetchpriority="high"
+              class="absolute inset-0 h-full w-full object-cover object-[70%_40%]"
+            />
+            <div class="absolute inset-0 bg-surface-scrim" aria-hidden="true"></div>
             <div
-              class="container-page flex flex-col items-start gap-10 pb-24 pt-16 lg:pb-32 lg:pt-24"
+              class="container-page relative flex flex-col items-start gap-10 pb-24 pt-16 lg:pb-32 lg:pt-24"
             >
               <div class="flex flex-col items-start gap-6">
                 <div class="flex flex-col items-start gap-3">
