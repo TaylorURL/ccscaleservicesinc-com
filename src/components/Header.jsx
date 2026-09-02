@@ -141,7 +141,18 @@ export default function Header() {
               className="btn btn-md btn-primary relative whitespace-nowrap"
             >
               <ClipboardList size={iconSize.text} aria-hidden="true" />
-              <span className="hidden sm:inline">Quote List</span>
+              {/* Below the small breakpoint the bar has room for the icon and
+                  nothing else, and the label was being dropped outright. Taken
+                  out of the flow rather than out of the document, it occupies
+                  the same nothing on a phone while still naming the control,
+                  which the icon beside it cannot: it is decorative, so a link
+                  with the label removed is a link with no name at all. The
+                  nowrap the button carries is restated at the width the label
+                  returns, because coming back into the flow restores the
+                  inherited wrapping with it. */}
+              <span className="sr-only sm:not-sr-only sm:inline sm:whitespace-nowrap">
+                Quote List
+              </span>
               {count > 0 && (
                 <span
                   key={count}

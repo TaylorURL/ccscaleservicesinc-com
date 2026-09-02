@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import ClickSpark from './components/ClickSpark';
 import Layout from './components/Layout';
@@ -35,8 +35,36 @@ const Privacy = lazy(withBuildRefresh(() => import('./pages/Privacy')));
 const Terms = lazy(withBuildRefresh(() => import('./pages/Terms')));
 const NotFound = lazy(withBuildRefresh(() => import('./pages/NotFound')));
 
+/**
+ * Whether the app has committed once. The entrance below is for a page that is
+ * arriving, and on the first commit nothing is: the shell in index.html has
+ * already drawn the first screen, so the route React resolves synchronously is
+ * a page the reader is looking at rather than one appearing.
+ */
+let committed = false;
+
+/**
+ * The route's entrance. It carries the fade for a page that replaces something
+ * else on screen - the next route on a navigation, and the placeholder on a
+ * chunk that has just landed - and no fade for the one route that is already
+ * drawn when React reaches it, where the animation would blink the page out and
+ * then hold it, and the photo behind it, at zero opacity until the bundle had
+ * run.
+ *
+ * The choice is taken at mount and kept. Adding the class to a live element
+ * replays the animation, so a re-render for any other reason would fade a page
+ * the reader is part way through reading.
+ */
+function RouteEntrance({ children }) {
+  const [entering] = useState(() => committed);
+  return <div className={entering ? 'fade-in' : undefined}>{children}</div>;
+}
+
 export default function App() {
   const { pathname } = useLocation();
+  useEffect(() => {
+    committed = true;
+  }, []);
 
   return (
     <QuoteProvider>
@@ -52,7 +80,7 @@ export default function App() {
           {/* Inside the boundary and keyed on the path, so the page that
               replaces the placeholder fades in rather than appearing between two
               frames, and the placeholder itself keeps its own entrance. */}
-          <div key={pathname} className="fade-in">
+          <RouteEntrance key={pathname}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/services" element={<Services />} />
@@ -65,7 +93,7 @@ export default function App() {
               <Route path="/terms" element={<Terms />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </div>
+          </RouteEntrance>
         </Suspense>
       </Layout>
     </QuoteProvider>
