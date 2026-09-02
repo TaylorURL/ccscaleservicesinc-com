@@ -40,10 +40,16 @@ export default function Home() {
             priority rather than left to queue behind the stylesheet. */}
         <img
           src="/photos/weighbridge-service-1280.webp"
-          srcSet="/photos/weighbridge-service-640.webp 640w, /photos/weighbridge-service-960.webp 960w, /photos/weighbridge-service-1280.webp 1280w, /photos/weighbridge-service-1440.webp 1440w, /photos/weighbridge-service-1600.webp 1600w"
+          srcSet="/photos/weighbridge-service-480.webp 480w, /photos/weighbridge-service-640.webp 640w, /photos/weighbridge-service-960.webp 960w, /photos/weighbridge-service-1280.webp 1280w, /photos/weighbridge-service-1440.webp 1440w, /photos/weighbridge-service-1600.webp 1600w"
           // The band runs the full width of the viewport at every breakpoint,
-          // so a phone takes the 640 cut and a desktop the one that covers it.
-          sizes="100vw"
+          // and a desktop is told exactly that. A phone is told three quarters
+          // of it, which is what puts the 640 cut on a phone rather than the
+          // 960 a literal reading picks. The scrim above is why: it holds the
+          // photograph well down the tonal range, and the two cuts are within
+          // a fifth of one value of each other across the band once it is drawn
+          // - measured, not assumed. Below that step the 480 covers a screen
+          // whose density does not ask for more.
+          sizes="(max-width: 768px) 75vw, 100vw"
           alt="A technician in a safety vest steering a test-weight cart across a truck scale at an aggregate yard"
           width="1600"
           height="1200"
