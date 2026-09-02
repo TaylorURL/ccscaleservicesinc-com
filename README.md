@@ -12,6 +12,9 @@
   Live at <a href="https://ccscaleservices.com">ccscaleservices.com</a>, moving to
   <a href="https://ccscaleservicesinc.com">ccscaleservicesinc.com</a>.
 </p>
+<p align="center">
+  <sub>Published for reading. Proprietary — see <a href="LICENSE.md">LICENSE.md</a>. Outside contributions are not accepted.</sub>
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/version-2026.36.6-2850a0?style=for-the-badge" alt="Version 2026.36.6" />
@@ -61,7 +64,7 @@ Services, parts, questions, and every business fact are four files under `src/co
 | Theming | CSS custom properties in `src/index.css`, three themes, Tailwind reads the same tokens |
 | SEO | Per-route meta and JSON-LD from `src/lib`; sitemap, robots.txt, llms.txt, and the business JSON-LD generated at `prebuild` |
 | State | React context over `localStorage` for the quote list and the theme choice |
-| Backend | None — requests leave as `mailto:` |
+| Backend | None — requests leave as `mailto:`; the one function under `api` reports the deployed commit |
 | Telemetry | A page-view counter and an error reporter, both in `index.html` |
 | Hosting | Vercel |
 
@@ -114,6 +117,8 @@ flowchart TD
 
 ```
 ccscaleservicesinc-com/
+├── api/
+│   └── version.js             Reports the commit the running deployment was built from
 ├── public/
 │   ├── brand/                 Logo, mark, Open Graph image
 │   ├── photos/                Service photography
@@ -137,7 +142,8 @@ ccscaleservicesinc-com/
 │   │   ├── theme.js           Reads, applies, and stores the light/dark/gray choice
 │   │   ├── quote-context.js   The quote list context and its hook
 │   │   ├── chunk-recovery.js  Reloads a tab still holding a build the host has replaced
-│   │   └── icon-size.js       The three sizes an icon is drawn at
+│   │   ├── icon-size.js       The three sizes an icon is drawn at
+│   │   └── local-time.js      The company's own clock, which the footer's year is read on
 │   ├── components/            Header and its panels, the phone rail, Footer, cards, the form primitives, the quote provider
 │   ├── index.css              The token layer, the base states, and the component classes
 │   ├── pages/                 One file per route
