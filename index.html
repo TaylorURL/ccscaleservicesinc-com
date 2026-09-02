@@ -58,6 +58,29 @@
          load the tag is deliberately kept out of, and the tag is queued to idle
          anyway, so only the lookup is worth doing early. -->
     <link rel="dns-prefetch" href="https://gujgtjqqurildqurpffh.supabase.co" />
+    <!-- The photo behind the home hero is the largest thing on the first
+         screen, and the preload starts it in the head rather than at the point
+         the parser reaches the shell's own markup.
+
+         It is asked for ahead of the two faces below because it is the paint
+         being measured and they are not: the text is already set in a fallback
+         re-metricked to the same space, so a face arriving a moment later swaps
+         without moving a line, while a photo arriving a moment later is the
+         first screen filling in. Three files asked for at once share one
+         connection between them, and this is the one that should have it. -->
+    <link
+      rel="preload"
+      as="image"
+      href="/photos/weighbridge-service-1280.webp"
+      imagesrcset="
+        /photos/weighbridge-service-640.webp 640w,
+        /photos/weighbridge-service-960.webp 960w,
+        /photos/weighbridge-service-1280.webp 1280w,
+        /photos/weighbridge-service-1440.webp 1440w,
+        /photos/weighbridge-service-1600.webp 1600w"
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
     <!-- Both faces are served from this origin and declared in the stylesheet.
          The stylesheet is discovered a step later than the document, so the two
          files are asked for here instead of waiting for it. -->
@@ -74,22 +97,6 @@
       as="font"
       type="font/woff2"
       crossorigin
-    />
-    <!-- The photo behind the home hero is the largest thing on the first
-         screen, and the preload starts it in the head rather than at the point
-         the parser reaches the shell's own markup. -->
-    <link
-      rel="preload"
-      as="image"
-      href="/photos/weighbridge-service-1280.webp"
-      imagesrcset="
-        /photos/weighbridge-service-640.webp 640w,
-        /photos/weighbridge-service-960.webp 960w,
-        /photos/weighbridge-service-1280.webp 1280w,
-        /photos/weighbridge-service-1440.webp 1440w,
-        /photos/weighbridge-service-1600.webp 1600w"
-      imagesizes="100vw"
-      fetchpriority="high"
     />
     <title>Scale Calibration, Repair, and Parts in Huffman, Texas</title>
     <script type="application/ld+json" id="local-business">
