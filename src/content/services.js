@@ -87,6 +87,3 @@ export const services = [
     ],
   },
 ];
-
-/** Lookup used by the service pages and by the request-service links. */
-export const serviceBySlug = Object.fromEntries(services.map((service) => [service.slug, service]));
