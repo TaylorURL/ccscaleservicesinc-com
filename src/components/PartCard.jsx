@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check, Plus } from 'lucide-react';
-import { categoryBySlug } from '../content/parts';
+import { categoryBySlug } from '../content/part-categories';
 import { useQuote } from '../lib/quote-context';
 import { iconSize } from '../lib/icon-size';
 
