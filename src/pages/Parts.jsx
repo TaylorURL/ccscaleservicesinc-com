@@ -5,7 +5,8 @@ import CallToAction from '../components/CallToAction';
 import PageHeader from '../components/PageHeader';
 import PartCard from '../components/PartCard';
 import { company } from '../content/company';
-import { categoryBySlug, partCategories, searchParts } from '../content/parts';
+import { categoryBySlug, partCategories } from '../content/part-categories';
+import { searchParts } from '../content/parts';
 import { fitDescription, useSeo } from '../lib/seo';
 import { iconSize } from '../lib/icon-size';
 

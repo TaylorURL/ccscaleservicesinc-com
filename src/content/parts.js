@@ -15,42 +15,11 @@
  * `name` is Title Case, because it renders as a filter button, a card heading,
  * an `h1`, and a line in a quote email. `summary` and `description` are sentence
  * case; they are prose.
+ *
+ * `category` names one of the groups in part-categories.js, which is its own
+ * module because the header and the home page read it on every visit and this
+ * file is read only by the two parts routes.
  */
-
-export const partCategories = [
-  {
-    slug: 'load-cells',
-    name: 'Load Cells',
-    blurb: 'The sensor under the scale. Most accuracy problems trace back to one of these.',
-  },
-  {
-    slug: 'indicators',
-    name: 'Indicators and Displays',
-    blurb:
-      'The head that reads the cells and drives the printer, the remote display, and the host system.',
-  },
-  {
-    slug: 'junction-boxes-and-cable',
-    name: 'Junction Boxes and Cable',
-    blurb:
-      'Where the signals from several cells are combined, and the wiring that carries them to the indicator.',
-  },
-  {
-    slug: 'printers-and-supplies',
-    name: 'Printers and Supplies',
-    blurb: 'Ticket printers and the consumables that keep them running.',
-  },
-  {
-    slug: 'test-weights',
-    name: 'Test Weights',
-    blurb: 'Certified weights for calibration, and for your own accuracy checks between visits.',
-  },
-  {
-    slug: 'mounting-and-hardware',
-    name: 'Mounting and Hardware',
-    blurb: 'Mounting kits, check rods, and the hardware that holds a weighbridge square.',
-  },
-];
 
 export const parts = [
   {
@@ -256,11 +225,6 @@ export const parts = [
 
 /** Lookup for the part detail route. */
 export const partBySlug = Object.fromEntries(parts.map((part) => [part.slug, part]));
-
-/** Lookup for the category heading and blurb shown above a filtered list. */
-export const categoryBySlug = Object.fromEntries(
-  partCategories.map((category) => [category.slug, category])
-);
 
 /**
  * Free-text match across the fields a customer would actually type: the part
