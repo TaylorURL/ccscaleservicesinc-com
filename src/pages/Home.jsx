@@ -3,7 +3,7 @@ import { ArrowRight, ChevronDown } from 'lucide-react';
 import CallToAction from '../components/CallToAction';
 import { company } from '../content/company';
 import { faqs } from '../content/faq';
-import { partCategories } from '../content/parts';
+import { partCategories } from '../content/part-categories';
 import { services } from '../content/services';
 import { useSeo } from '../lib/seo';
 import { faqSchema, localBusinessSchema } from '../lib/structured-data';

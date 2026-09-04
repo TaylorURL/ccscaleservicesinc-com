@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2026.36.9-2850a0?style=for-the-badge" alt="Version 2026.36.9" />
+  <img src="https://img.shields.io/badge/version-2026.36.10-2850a0?style=for-the-badge" alt="Version 2026.36.10" />
   <img src="https://img.shields.io/badge/React-19-2850a0?style=for-the-badge&logo=react&logoColor=white" alt="React 19" />
   <img src="https://img.shields.io/badge/Vite-7-2850a0?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 7" />
   <img src="https://img.shields.io/badge/React_Router-7-0898b0?style=for-the-badge&logo=reactrouter&logoColor=white" alt="React Router 7" />
@@ -47,7 +47,7 @@ Every catalog entry is its own indexable URL with structured data, which is what
 
 ### Content without a CMS
 
-Services, parts, questions, and every business fact are four files under `src/content`. Adding a part is a data edit.
+Services, parts, questions, and every business fact are five files under `src/content`. Adding a part is a data edit.
 
 <br />
 
@@ -106,7 +106,7 @@ flowchart TD
 
 ## How it works
 
-- **Content is the database.** Four modules under `src/content` hold every fact the site states — the business details, the five services, the parts catalog and its categories, and the home-page questions. Pages, structured data, and the sitemap all read from the same modules, so a fact is stated once.
+- **Content is the database.** Five modules under `src/content` hold every fact the site states — the business details, the five services, the part categories, the parts catalog, and the home-page questions. Pages, structured data, and the sitemap all read from the same modules, so a fact is stated once.
 - **A request is an email, not a POST.** `src/lib/request-email.js` composes both the quote and the service message and hands it to the visitor's mail program. The plain text is built separately from the `mailto:` link so the request page can show it on screen — a machine with no mail client configured still leaves the visitor something to copy.
 - **The quote list carries context.** Each line holds the make, model, and capacity of the scale the part is for, so one message reaches sales with enough to price it without a follow-up.
 - **Every part is an indexable URL.** The catalog, the detail route, and the sitemap are all driven off `parts.js`, and each entry gets `Product` and `Breadcrumb` structured data alongside the `LocalBusiness` and `Service` blocks.
@@ -133,7 +133,8 @@ ccscaleservicesinc-com/
 │   ├── content/               Everything the site states as fact
 │   │   ├── company.js         Name, emails, phone, address, hours, credentials
 │   │   ├── services.js        The five services, their detail and their slugs
-│   │   ├── parts.js           Catalog, categories, and the search over them
+│   │   ├── part-categories.js The six groups the catalog is filed under
+│   │   ├── parts.js           The catalog and the search over it
 │   │   └── faq.js             Questions answered on the home page
 │   ├── lib/
 │   │   ├── seo.js             Per-route title, meta, canonical, and JSON-LD
@@ -155,7 +156,7 @@ ccscaleservicesinc-com/
 
 ## Editing content
 
-Adding a part means appending an object to `parts` in `src/content/parts.js`. It needs a `slug`, a `category` matching one in `partCategories`, a `summary`, a `description`, an `askFor` list of what a quote needs, and `keywords` for the on-site search. The catalog page, the detail route, and the sitemap all pick it up from there.
+Adding a part means appending an object to `parts` in `src/content/parts.js`. It needs a `slug`, a `category` matching one in `partCategories` in `src/content/part-categories.js`, a `summary`, a `description`, an `askFor` list of what a quote needs, and `keywords` for the on-site search. The catalog page, the detail route, and the sitemap all pick it up from there.
 
 A `slug` is a public URL. Add and retire them; renaming one breaks whatever already links to it.
 

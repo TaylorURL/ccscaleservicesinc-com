@@ -26,9 +26,10 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const { company, addressLine } = await import(
   pathToFileURL(resolve(root, 'src/content/company.js'))
 );
-const { parts, partCategories } = await import(
-  pathToFileURL(resolve(root, 'src/content/parts.js'))
+const { partCategories } = await import(
+  pathToFileURL(resolve(root, 'src/content/part-categories.js'))
 );
+const { parts } = await import(pathToFileURL(resolve(root, 'src/content/parts.js')));
 const { services } = await import(pathToFileURL(resolve(root, 'src/content/services.js')));
 const { localBusinessSchema } = await import(
   pathToFileURL(resolve(root, 'src/lib/structured-data.js'))
