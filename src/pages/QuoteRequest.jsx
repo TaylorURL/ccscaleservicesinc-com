@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Copy, Mail, PackageSearch, Trash2, Undo2 } from 'lucide-react';
-import ContactFields from '../components/ContactFields';
-import FormErrorSummary from '../components/FormErrorSummary';
-import FormField from '../components/FormField';
-import PageHeader from '../components/PageHeader';
+import ContactFields from '../components/forms/ContactFields';
+import FormErrorSummary from '../components/forms/FormErrorSummary';
+import FormField from '../components/forms/FormField';
+import PageHeader from '../components/sections/PageHeader';
 import { company } from '../content/company';
 import { focusField, useContactForm } from '../lib/contact-form';
 import { useQuote } from '../lib/quote-context';

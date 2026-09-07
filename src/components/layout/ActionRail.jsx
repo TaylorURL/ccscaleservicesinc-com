@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Phone, Wrench } from 'lucide-react';
-import { company, phoneHref } from '../content/company';
-import { iconSize } from '../lib/icon-size';
+import { company, phoneHref } from '../../content/company';
+import { iconSize } from '../../lib/icon-size';
 
 /**
  * The two actions the site exists to produce, pinned to the bottom edge on

@@ -13,10 +13,10 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
-import { addressLine, company, hasAddress, phoneHref } from '../content/company';
+import { addressLine, company, hasAddress, phoneHref } from '../../content/company';
 import Wordmark from './Wordmark';
-import { iconSize } from '../lib/icon-size';
-import { currentYear } from '../lib/local-time';
+import { iconSize } from '../../lib/icon-size';
+import { currentYear } from '../../lib/local-time';
 
 const socialLinks = [
   { key: 'facebook', label: 'Facebook', Icon: Facebook },

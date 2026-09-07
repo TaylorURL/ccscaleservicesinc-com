@@ -1,6 +1,6 @@
 import { Moon, Sun, SunMoon } from 'lucide-react';
-import { THEMES, useTheme } from '../lib/theme';
-import { iconSize } from '../lib/icon-size';
+import { THEMES, useTheme } from '../../lib/theme';
+import { iconSize } from '../../lib/icon-size';
 
 const ICONS = { light: Sun, dark: Moon, gray: SunMoon };
 

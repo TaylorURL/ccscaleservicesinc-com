@@ -1,10 +1,10 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import ClickSpark from './components/ClickSpark';
-import Layout from './components/Layout';
-import RouteFallback from './components/RouteFallback';
-import ScrollToTop from './components/ScrollToTop';
-import { QuoteProvider } from './components/QuoteProvider';
+import ClickSpark from './components/app/ClickSpark';
+import Layout from './components/layout/Layout';
+import RouteFallback from './components/app/RouteFallback';
+import ScrollToTop from './components/app/ScrollToTop';
+import { QuoteProvider } from './components/app/QuoteProvider';
 import Home from './pages/Home';
 import { withBuildRefresh } from './lib/chunk-recovery';
 

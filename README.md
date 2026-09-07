@@ -146,7 +146,11 @@ ccscaleservicesinc-com/
 │   │   ├── chunk-recovery.js  Reloads a tab still holding a build the host has replaced
 │   │   ├── icon-size.js       The three sizes an icon is drawn at
 │   │   └── local-time.js      The company's own clock, which the footer's year is read on
-│   ├── components/            Header and its panels, the phone rail, Footer, cards, the form primitives, the quote provider
+│   ├── components/
+│   │   ├── layout/            The frame every page is drawn inside: Header and its panels, ActionRail, Footer, ThemeToggle, Wordmark
+│   │   ├── sections/          Blocks a page composes: PageHeader, CallToAction, PartCard
+│   │   ├── forms/             The shared field kit: FormField, ContactFields, FormErrorSummary
+│   │   └── app/               What App.jsx mounts around the routes: QuoteProvider, ScrollToTop, ClickSpark, RouteFallback
 │   ├── index.css              The token layer, the base states, and the component classes
 │   ├── pages/                 One file per route
 │   ├── App.jsx                Route table, every page but the home page behind its own chunk

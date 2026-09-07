@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { PackageSearch, Search } from 'lucide-react';
-import CallToAction from '../components/CallToAction';
-import PageHeader from '../components/PageHeader';
-import PartCard from '../components/PartCard';
+import CallToAction from '../components/sections/CallToAction';
+import PageHeader from '../components/sections/PageHeader';
+import PartCard from '../components/sections/PartCard';
 import { company } from '../content/company';
 import { categoryBySlug, partCategories } from '../content/part-categories';
 import { searchParts } from '../content/parts';

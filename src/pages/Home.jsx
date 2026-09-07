@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronDown } from 'lucide-react';
-import CallToAction from '../components/CallToAction';
+import CallToAction from '../components/sections/CallToAction';
 import { company } from '../content/company';
 import { faqs } from '../content/faq';
 import { partCategories } from '../content/part-categories';

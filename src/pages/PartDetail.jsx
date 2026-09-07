@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Check, ChevronRight, Plus } from 'lucide-react';
-import CallToAction from '../components/CallToAction';
-import FormField from '../components/FormField';
-import PartCard from '../components/PartCard';
+import CallToAction from '../components/sections/CallToAction';
+import FormField from '../components/forms/FormField';
+import PartCard from '../components/sections/PartCard';
 import NotFound from './NotFound';
 import { company } from '../content/company';
 import { categoryBySlug } from '../content/part-categories';
