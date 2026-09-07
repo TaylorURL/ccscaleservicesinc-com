@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Check } from 'lucide-react';
-import CallToAction from '../components/CallToAction';
-import PageHeader from '../components/PageHeader';
+import CallToAction from '../components/sections/CallToAction';
+import PageHeader from '../components/sections/PageHeader';
 import { services } from '../content/services';
 import { useSeo } from '../lib/seo';
 import { serviceSchema } from '../lib/structured-data';

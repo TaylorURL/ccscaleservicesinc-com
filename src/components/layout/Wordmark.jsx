@@ -1,4 +1,4 @@
-import { company } from '../content/company';
+import { company } from '../../content/company';
 
 /**
  * The company mark next to the name. The shield is vector on a transparent

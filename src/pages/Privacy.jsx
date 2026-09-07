@@ -11,7 +11,7 @@
  * order. It leads, and the prose under it is where a reader goes for the one
  * row they came about.
  */
-import PageHeader from '../components/PageHeader';
+import PageHeader from '../components/sections/PageHeader';
 import { company } from '../content/company';
 import { useSeo } from '../lib/seo';
 

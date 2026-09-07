@@ -4,8 +4,8 @@
  * a heading with nothing under it. The prose beside them holds only what is true
  * of the work regardless of those values.
  */
-import CallToAction from '../components/CallToAction';
-import PageHeader from '../components/PageHeader';
+import CallToAction from '../components/sections/CallToAction';
+import PageHeader from '../components/sections/PageHeader';
 import { company } from '../content/company';
 import { useSeo } from '../lib/seo';
 import { localBusinessSchema } from '../lib/structured-data';

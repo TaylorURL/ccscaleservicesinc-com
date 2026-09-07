@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Check, Copy, Mail, MapPin, Phone } from 'lucide-react';
-import ContactFields from '../components/ContactFields';
-import FormErrorSummary from '../components/FormErrorSummary';
-import FormField from '../components/FormField';
-import PageHeader from '../components/PageHeader';
+import ContactFields from '../components/forms/ContactFields';
+import FormErrorSummary from '../components/forms/FormErrorSummary';
+import FormField from '../components/forms/FormField';
+import PageHeader from '../components/sections/PageHeader';
 import { addressLine, company, hasAddress, phoneHref } from '../content/company';
 import { services } from '../content/services';
 import { focusField, useContactForm } from '../lib/contact-form';

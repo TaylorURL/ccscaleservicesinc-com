@@ -1,5 +1,5 @@
 import { AlertCircle } from 'lucide-react';
-import { iconSize } from '../lib/icon-size';
+import { iconSize } from '../../lib/icon-size';
 
 /**
  * Three messages spread down a long form are three things to hunt for. Past one
