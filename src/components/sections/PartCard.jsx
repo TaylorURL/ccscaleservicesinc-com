@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check, Plus } from 'lucide-react';
-import { categoryBySlug } from '../content/part-categories';
-import { useQuote } from '../lib/quote-context';
-import { iconSize } from '../lib/icon-size';
+import { categoryBySlug } from '../../content/part-categories';
+import { useQuote } from '../../lib/quote-context';
+import { iconSize } from '../../lib/icon-size';
 
 export default function PartCard({ part }) {
   const { addItem, has } = useQuote();

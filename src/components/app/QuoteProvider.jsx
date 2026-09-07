@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { QuoteContext } from '../lib/quote-context';
+import { QuoteContext } from '../../lib/quote-context';
 
 /**
  * Holds the quote list and mirrors it to localStorage, so a visitor who collects

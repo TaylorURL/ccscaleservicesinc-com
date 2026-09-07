@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { company, phoneHref } from '../content/company';
+import { company, phoneHref } from '../../content/company';
 
 /** Closing band, repeated at the foot of the content pages. */
 export default function CallToAction({

@@ -1,5 +1,5 @@
 import { AlertCircle, ChevronDown } from 'lucide-react';
-import { iconSize } from '../lib/icon-size';
+import { iconSize } from '../../lib/icon-size';
 
 /**
  * One label, one control, one message slot, at one rhythm - and the control

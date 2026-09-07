@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2026.36.11-2850a0?style=for-the-badge" alt="Version 2026.36.11" />
+  <img src="https://img.shields.io/badge/version-2026.37.0-2850a0?style=for-the-badge" alt="Version 2026.37.0" />
   <img src="https://img.shields.io/badge/React-19-2850a0?style=for-the-badge&logo=react&logoColor=white" alt="React 19" />
   <img src="https://img.shields.io/badge/Vite-7-2850a0?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 7" />
   <img src="https://img.shields.io/badge/React_Router-7-0898b0?style=for-the-badge&logo=reactrouter&logoColor=white" alt="React Router 7" />
@@ -146,7 +146,11 @@ ccscaleservicesinc-com/
 │   │   ├── chunk-recovery.js  Reloads a tab still holding a build the host has replaced
 │   │   ├── icon-size.js       The three sizes an icon is drawn at
 │   │   └── local-time.js      The company's own clock, which the footer's year is read on
-│   ├── components/            Header and its panels, the phone rail, Footer, cards, the form primitives, the quote provider
+│   ├── components/
+│   │   ├── layout/            The frame every page is drawn inside: Header and its panels, ActionRail, Footer, ThemeToggle, Wordmark
+│   │   ├── sections/          Blocks a page composes: PageHeader, CallToAction, PartCard
+│   │   ├── forms/             The shared field kit: FormField, ContactFields, FormErrorSummary
+│   │   └── app/               What App.jsx mounts around the routes: QuoteProvider, ScrollToTop, ClickSpark, RouteFallback
 │   ├── index.css              The token layer, the base states, and the component classes
 │   ├── pages/                 One file per route
 │   ├── App.jsx                Route table, every page but the home page behind its own chunk

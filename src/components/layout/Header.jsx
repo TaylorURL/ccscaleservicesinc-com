@@ -20,12 +20,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { ChevronDown, ClipboardList, MapPin, Phone, Wrench } from 'lucide-react';
-import { addressLine, company, hasAddress, phoneHref } from '../content/company';
-import { services } from '../content/services';
-import { partCategories } from '../content/part-categories';
-import { useQuote } from '../lib/quote-context';
+import { addressLine, company, hasAddress, phoneHref } from '../../content/company';
+import { services } from '../../content/services';
+import { partCategories } from '../../content/part-categories';
+import { useQuote } from '../../lib/quote-context';
 import Wordmark from './Wordmark';
-import { iconSize } from '../lib/icon-size';
+import { iconSize } from '../../lib/icon-size';
 
 const primary = [
   { key: 'services', label: 'Services' },
