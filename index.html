@@ -361,6 +361,145 @@
         }
       })();
     </script>
+    <!-- Keeps a visitor whose entry bundle never arrived from being left on a
+         page that cannot become the site.
+
+         src/lib/chunk-recovery.js already answers for a route chunk that goes
+         missing, and it cannot answer for this: it is compiled into the entry
+         bundle, so the one failure it could never cover is the bundle itself
+         not arriving. That recovery has to be in the document or nowhere, which
+         is why it is written out here rather than imported.
+
+         What the visitor is left with without it is quiet rather than broken.
+         The shell below is the home route's first screen and the sheet is in
+         this document, so the page looks finished: it is styled, it has the
+         headline and the phone number, and nothing on it says anything failed.
+         React never mounts, so nothing on it responds either, and because
+         vercel.json rewrites every path to this document, a visitor who asked
+         for /contact or /parts is reading the home page under their own URL
+         with no form and no catalog.
+
+         Two failures reach here and they want different answers. A request that
+         simply did not arrive is answered by asking again, so the bundle is
+         retried twice under a query string - the URL has to differ, or the
+         browser serves back the failure it already cached. A file a deploy
+         replaced cannot be fetched at any address, because the name itself is
+         gone; only a new document naming the file that replaced it recovers
+         that, so the retries fall back to a reload.
+
+         One reload per tab, which is enough for a build that moved and not
+         enough for a bundle that will never arrive to become a loop, and a
+         store that cannot be read counts as an allowance already spent. A boot
+         that succeeds hands the allowance back, so the next incident gets its
+         own.
+
+         Nothing here quiets the report. The reporter above has already sent
+         'Failed to load script' by the time any of this runs, and it stays
+         sent: a recovery that hid the failure would buy silence at the cost of
+         ever hearing about it again. -->
+    <script>
+      (function () {
+        var MARK = 'ciss.entry-refresh.v1';
+        var RETRY_LIMIT = 2;
+        // The load event waits for the entry script, so a document that has
+        // finished loading without the bundle having run is not going to get
+        // it. The grace is for the frame the browser takes to run it.
+        var GRACE_MS = 1500;
+
+        var arrived = false;
+        var attempts = 0;
+        var answering = false;
+
+        function spent() {
+          try {
+            return sessionStorage.getItem(MARK) === '1';
+          } catch (ignored) {
+            return true;
+          }
+        }
+        function spend() {
+          try {
+            sessionStorage.setItem(MARK, '1');
+          } catch (ignored) {
+            // Nothing to spend when the store is closed to us.
+          }
+        }
+        function release() {
+          try {
+            sessionStorage.removeItem(MARK);
+          } catch (ignored) {
+            // Nothing to release when the store is closed to us.
+          }
+        }
+
+        // src/main.jsx calls this the moment the bundle executes. It is the one
+        // signal that separates a bundle that never arrived from a bundle that
+        // arrived and threw, and only the first is this code's business.
+        window.__cissEntryArrived = function () {
+          arrived = true;
+          release();
+        };
+
+        // The build writes one module script with no query on it; the retries
+        // below all carry one, so this always finds the original.
+        function entrySrc() {
+          var tags = document.querySelectorAll('script[type="module"][src]');
+          for (var i = 0; i < tags.length; i += 1) {
+            var src = tags[i].getAttribute('src') || '';
+            if (src && src.indexOf('?') === -1) return src;
+          }
+          return '';
+        }
+
+        function reload() {
+          if (spent()) return;
+          spend();
+          window.location.reload();
+        }
+
+        function answer() {
+          if (arrived) return;
+          var src = entrySrc();
+          if (!src || attempts >= RETRY_LIMIT) {
+            reload();
+            return;
+          }
+          attempts += 1;
+          var tag = document.createElement('script');
+          tag.type = 'module';
+          tag.crossOrigin = 'anonymous';
+          tag.src = src + '?retry=' + attempts;
+          // No onerror here: the listener below is on the window in capture
+          // phase and already sees this tag fail. Handling it twice would spend
+          // both retries on the first failure.
+          document.head.appendChild(tag);
+        }
+
+        // Capture phase, because a script that fails to load fires an error
+        // event that does not bubble.
+        window.addEventListener(
+          'error',
+          function (event) {
+            var target = event.target;
+            if (!target || target === window || !target.tagName) return;
+            if (target.tagName.toLowerCase() !== 'script') return;
+            if ((target.type || '') !== 'module') return;
+            answering = true;
+            answer();
+          },
+          true
+        );
+
+        // A bundle can also fail to run without ever firing an error event -
+        // a proxy answering it as HTML, a truncated response. The load event
+        // having passed with nothing having booted says so.
+        window.addEventListener('load', function () {
+          window.setTimeout(function () {
+            if (!arrived && !answering) answer();
+          }, GRACE_MS);
+        });
+      })();
+    </script>
     <!-- Traffic analytics. The site key is public by design: it says which
          site a hit belongs to, and the collector accepts it only from this
          site's own origins.

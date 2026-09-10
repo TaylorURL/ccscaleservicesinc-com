@@ -4,6 +4,17 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 
+/*
+ * Tells the entry guard in index.html that the bundle arrived. It is the first
+ * thing this module does, because the guard is waiting to decide whether to ask
+ * for the bundle again or reload the document, and the answer is neither as
+ * soon as this line runs. Anything that throws below is a bundle that arrived
+ * and broke, which is a different fault and not one a reload fixes.
+ */
+if (typeof window !== 'undefined' && typeof window.__cissEntryArrived === 'function') {
+  window.__cissEntryArrived();
+}
+
 /**
  * React clears the container it is given, and the container is the shell in
  * index.html: the finished first screen, drawn by the document itself. Mounting
