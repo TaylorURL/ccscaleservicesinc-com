@@ -166,6 +166,12 @@
   --grid-image:
     linear-gradient(var(--grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  /* The tile the two lines above repeat over. The image is a single line pair
+     and nothing else, so the size is what turns it into a grid: without one the
+     tile is the whole band and the pair is drawn once, along its top and left
+     edge. Fixed rather than relative to the band, so the texture stays the same
+     density on a short header and a tall one. */
+  --grid-size: 2.5rem;
 
   /* Chrome and Safari paint an autofilled field with their own background, and
      it survives background-color. An inset shadow the size of the field is what
