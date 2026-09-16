@@ -2,7 +2,7 @@
   "name": "ccscaleservicesinc-com",
   "private": true,
   "license": "UNLICENSED",
-  "version": "2026.37.2",
+  "version": "2026.38.0",
   "description": "Compound Industrial Scale Services Inc: scale calibration, repair, and parts.",
   "type": "module",
   "scripts": {
@@ -27,8 +27,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@types/react": "^19.2.5",
-    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.20",
     "beasties": "^0.5.2",

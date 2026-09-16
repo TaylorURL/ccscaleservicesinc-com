@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Copy, Mail, PackageSearch, Trash2, Undo2 } from 'lucide-react';
 import ContactFields from '../components/forms/ContactFields';
@@ -8,7 +8,7 @@ import PageHeader from '../components/sections/PageHeader';
 import { company } from '../content/company';
 import { focusField, useContactForm } from '../lib/contact-form';
 import { useQuote } from '../lib/quote-context';
-import { buildQuoteRequest } from '../lib/request-email';
+import { buildQuoteRequest, useSentRequest } from '../lib/request-email';
 import { useSeo } from '../lib/seo';
 import { iconSize } from '../lib/icon-size';
 
@@ -25,19 +25,9 @@ export default function QuoteRequest() {
   const [cleared, setCleared] = useState(null);
   const { contact, errors, change, blur, validate } = useContactForm();
   const [notes, setNotes] = useState('');
-  const [sent, setSent] = useState(null);
-  const [copied, setCopied] = useState(false);
+  const { sent, copied, send, copyRequest } = useSentRequest();
 
   useSeo(metadata);
-
-  // The label reverts on its own, so the button offers the copy again; a
-  // permanent "Copied" reads as a dead control. The timer lives in an effect
-  // rather than in the handler so leaving the page clears it.
-  useEffect(() => {
-    if (!copied) return undefined;
-    const timer = window.setTimeout(() => setCopied(false), 2000);
-    return () => window.clearTimeout(timer);
-  }, [copied]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -46,20 +36,7 @@ export default function QuoteRequest() {
       focusField(firstBad);
       return;
     }
-    const request = buildQuoteRequest({ contact, items, notes });
-    setSent(request);
-    setCopied(false);
-    window.location.href = request.mailto;
-  }
-
-  async function copyRequest() {
-    if (!sent) return;
-    try {
-      await navigator.clipboard.writeText(`${sent.subject}\n\n${sent.body}`);
-      setCopied(true);
-    } catch {
-      setCopied(false);
-    }
+    send(buildQuoteRequest({ contact, items, notes }));
   }
 
   return (

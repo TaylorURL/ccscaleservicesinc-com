@@ -22,7 +22,7 @@ export const THEMES = [
 
 const NAMES = THEMES.map((theme) => theme.value);
 
-export function readStoredTheme() {
+function readStoredTheme() {
   try {
     const stored = window.localStorage.getItem(THEME_KEY);
     return NAMES.includes(stored) ? stored : null;
@@ -48,7 +48,7 @@ function syncBrowserChrome() {
   meta.setAttribute('content', surface);
 }
 
-export function applyTheme(theme) {
+function applyTheme(theme) {
   const root = document.documentElement;
   if (theme) {
     root.setAttribute('data-theme', theme);
