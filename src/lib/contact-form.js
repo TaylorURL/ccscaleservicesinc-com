@@ -9,16 +9,16 @@ import { useCallback, useState } from 'react';
  * that something is wrong and nothing about what to do next.
  */
 
-export const emptyContact = { name: '', company: '', email: '', phone: '' };
+const emptyContact = { name: '', company: '', email: '', phone: '' };
 
 /** Ordered, so a failed submit can move focus to the first field that needs work. */
-export const contactFieldOrder = ['name', 'company', 'email', 'phone'];
+const contactFieldOrder = ['name', 'company', 'email', 'phone'];
 
 // Deliberately loose: the only thing worth catching here is an address that
 // cannot reach anybody. Anything stricter rejects addresses that do.
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function validateContact(contact) {
+function validateContact(contact) {
   const errors = {};
   if (!contact.name.trim()) {
     errors.name = "Add your name so we know who's asking.";

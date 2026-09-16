@@ -29,13 +29,10 @@ export const company = {
   legalName: 'Compound Industrial Scale Services Inc',
   name: 'Compound Industrial Scale Services',
   url: siteUrl,
-  domain: siteUrl.replace(/^https?:\/\//, ''),
   tagline: 'Scale calibration, repair, and parts',
 
   /** A blank string hides the phone in the header, the footer, and the contact page. */
   phone: '346-885-5159',
-  /** The after-hours or dispatch line, hidden the same way when blank. */
-  serviceLine: '',
 
   email: {
     sales: 'sales@ccscaleservicesinc.com',

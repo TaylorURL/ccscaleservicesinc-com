@@ -59,6 +59,7 @@ Services, parts, questions, and every business fact are five files under `src/co
 | Build & dev | Vite 7 |
 | Styling | Tailwind CSS 3 + PostCSS |
 | Icons | `lucide-react` |
+| Attribution rail | `@taylorurl/split-rail`, the shared footer bar every TaylorURL site carries |
 | Type | Inter and Archivo, self-hosted from `public/fonts` with metric-matched local fallbacks |
 | Content | Plain JS modules under `src/content` |
 | Theming | CSS custom properties in `src/index.css`, three themes, Tailwind reads the same tokens |
@@ -83,7 +84,8 @@ No environment configuration is required to run the site locally. `VITE_SITE_URL
 | Script | Does |
 | :--- | :--- |
 | `npm run dev` | Start the Vite dev server on port 5173. |
-| `npm run build` | Regenerate the sitemap, robots.txt, llms.txt, and the business JSON-LD, build to `dist/`, then write the stylesheet into the built `index.html`. |
+| `npm run prebuild` | `scripts/generate-crawl-files.mjs`. Reads the content modules and writes `public/sitemap.xml`, `public/robots.txt`, `public/llms.txt`, and both the business JSON-LD block and the nav panels' destination lists inside the repo's own `index.html`. npm runs it ahead of `build`; those four files are tracked, so a build leaves them rewritten in the working tree. |
+| `npm run build` | Run `prebuild`, build to `dist/`, then write the stylesheet into the built `index.html`. |
 | `npm run preview` | Serve the production build. |
 | `npm run lint` | Lint with ESLint. |
 | `npm run lint:fix` | Lint and auto-fix. |
@@ -139,7 +141,7 @@ ccscaleservicesinc-com/
 │   ├── lib/
 │   │   ├── seo.js             Per-route title, meta, canonical, and JSON-LD
 │   │   ├── structured-data.js LocalBusiness, Service, Product, Breadcrumb, FAQ blocks
-│   │   ├── request-email.js   Composes the quote and service request messages
+│   │   ├── request-email.js   Composes the quote and service request messages, and holds the one a page has just sent
 │   │   ├── contact-form.js    The shared contact fields, their rules, and their messages
 │   │   ├── theme.js           Reads, applies, and stores the light/dark/gray choice
 │   │   ├── quote-context.js   The quote list context and its hook
@@ -147,7 +149,7 @@ ccscaleservicesinc-com/
 │   │   ├── icon-size.js       The three sizes an icon is drawn at
 │   │   └── local-time.js      The company's own clock, which the footer's year is read on
 │   ├── components/
-│   │   ├── layout/            The frame every page is drawn inside: Header and its panels, ActionRail, Footer, ThemeToggle, Wordmark
+│   │   ├── layout/            The frame every page is drawn inside: Layout, Header and its panels, ActionRail, Footer, ThemeToggle, Wordmark
 │   │   ├── sections/          Blocks a page composes: PageHeader, CallToAction, PartCard
 │   │   ├── forms/             The shared field kit: FormField, ContactFields, FormErrorSummary
 │   │   └── app/               What App.jsx mounts around the routes: QuoteProvider, ScrollToTop, ClickSpark, RouteFallback

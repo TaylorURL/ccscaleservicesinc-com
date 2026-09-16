@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Check, Copy, Mail, MapPin, Phone } from 'lucide-react';
 import ContactFields from '../components/forms/ContactFields';
 import FormErrorSummary from '../components/forms/FormErrorSummary';
@@ -7,7 +7,7 @@ import PageHeader from '../components/sections/PageHeader';
 import { addressLine, company, hasAddress, phoneHref } from '../content/company';
 import { services } from '../content/services';
 import { focusField, useContactForm } from '../lib/contact-form';
-import { buildServiceRequest } from '../lib/request-email';
+import { buildServiceRequest, useSentRequest } from '../lib/request-email';
 import { useSeo } from '../lib/seo';
 import { localBusinessSchema } from '../lib/structured-data';
 import { iconSize } from '../lib/icon-size';
@@ -25,19 +25,9 @@ export default function Contact() {
   const [service, setService] = useState('');
   const [message, setMessage] = useState('');
   const [messageError, setMessageError] = useState('');
-  const [sent, setSent] = useState(null);
-  const [copied, setCopied] = useState(false);
+  const { sent, copied, send, copyRequest } = useSentRequest();
 
   useSeo(metadata, localBusinessSchema());
-
-  // The label reverts on its own, so the button offers the copy again; a
-  // permanent "Copied" reads as a dead control. The timer lives in an effect
-  // rather than in the handler so leaving the page clears it.
-  useEffect(() => {
-    if (!copied) return undefined;
-    const timer = window.setTimeout(() => setCopied(false), 2000);
-    return () => window.clearTimeout(timer);
-  }, [copied]);
 
   function checkMessage(value) {
     return value.trim()
@@ -56,20 +46,7 @@ export default function Contact() {
       focusField(firstBad);
       return;
     }
-    const request = buildServiceRequest({ contact, service, message });
-    setSent(request);
-    setCopied(false);
-    window.location.href = request.mailto;
-  }
-
-  async function copyRequest() {
-    if (!sent) return;
-    try {
-      await navigator.clipboard.writeText(`${sent.subject}\n\n${sent.body}`);
-      setCopied(true);
-    } catch {
-      setCopied(false);
-    }
+    send(buildServiceRequest({ contact, service, message }));
   }
 
   return (
