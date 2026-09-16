@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState } from 'react';
 import { company } from '../content/company';
 
 /**
@@ -65,4 +66,45 @@ export function buildServiceRequest({ contact, service, message }) {
 
 function toMailto(recipient, subject, body) {
   return `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+/**
+ * Holds the request a page has just handed to the mail program, and the state
+ * of the button that copies it.
+ *
+ * Both request pages do the same thing once the form validates: hand the
+ * message to the mail program, keep it on screen for a visitor whose machine
+ * opened nothing, and offer it as a copy. The pages differ only in what they
+ * compose, so the composed message is the argument and the rest lives here.
+ */
+export function useSentRequest() {
+  const [sent, setSent] = useState(null);
+  const [copied, setCopied] = useState(false);
+
+  // The label reverts on its own, so the button offers the copy again; a
+  // permanent "Copied" reads as a dead control. The timer lives in an effect
+  // rather than in the handler so leaving the page clears it.
+  useEffect(() => {
+    if (!copied) return undefined;
+    const timer = window.setTimeout(() => setCopied(false), 2000);
+    return () => window.clearTimeout(timer);
+  }, [copied]);
+
+  const send = useCallback((request) => {
+    setSent(request);
+    setCopied(false);
+    window.location.href = request.mailto;
+  }, []);
+
+  const copyRequest = useCallback(async () => {
+    if (!sent) return;
+    try {
+      await navigator.clipboard.writeText(`${sent.subject}\n\n${sent.body}`);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
+  }, [sent]);
+
+  return { sent, copied, send, copyRequest };
 }
