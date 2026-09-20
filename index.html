@@ -379,13 +379,26 @@
          for /contact or /parts is reading the home page under their own URL
          with no form and no catalog.
 
-         Two failures reach here and they want different answers. A request that
-         simply did not arrive is answered by asking again, so the bundle is
-         retried twice under a query string - the URL has to differ, or the
+         Three failures reach here and they want different answers. A request
+         that simply did not arrive is answered by asking again, so the bundle
+         is retried twice under a query string - the URL has to differ, or the
          browser serves back the failure it already cached. A file a deploy
          replaced cannot be fetched at any address, because the name itself is
          gone; only a new document naming the file that replaced it recovers
          that, so the retries fall back to a reload.
+
+         A file that arrived and did not parse is the third, and neither answer
+         fits it: the same bytes parse the same way at another address, and a
+         reload asks the host for the same document again. Both were being
+         spent on it anyway, which downloaded a bundle that could never run a
+         second time and filed the identical fault twice. So a parse failure
+         ends the recovery, and what the reader is owed instead is a word. The
+         engine is asked, at that moment, to compile the syntax the bundle is
+         built out of: refusing it, the engine cannot run any build of this
+         site and the notice says so, above a page whose links and phone number
+         all still work. Compiling it, the engine is one the site targets and
+         the build is at fault, which is a thing for the report to carry and
+         not for the reader to read.
 
          One reload per tab, which is enough for a build that moved and not
          enough for a bundle that will never arrive to become a loop, and a
@@ -409,6 +422,8 @@
         var arrived = false;
         var attempts = 0;
         var answering = false;
+        var unparsable = false;
+        var told = false;
 
         function spent() {
           try {
@@ -452,13 +467,77 @@
         }
 
         function reload() {
-          if (spent()) return;
+          if (unparsable || spent()) return;
           spend();
           window.location.reload();
         }
 
+        // A sample of the syntax the bundle is built out of, handed to the
+        // engine that is about to be asked to run it. vite.config.js states the
+        // floor; this is what that floor buys, so an engine that will not
+        // compile it cannot run any build of this site. A page whose policy
+        // refuses Function throws something other than a SyntaxError, and a
+        // locked-down page is not an engine that cannot read the language.
+        function engineRefusesSyntax() {
+          try {
+            new Function(
+              'class P { #v = 1; static {} get v() { return this.#v } }' +
+                'return function (a) { var b = a?.b ?? 0; b ??= 1; return b + new P().v; }'
+            );
+            return false;
+          } catch (error) {
+            return error instanceof SyntaxError;
+          }
+        }
+
+        // The shell below is a finished first screen, so an engine that cannot
+        // run the bundle is left reading a page that looks complete and answers
+        // nothing. This is a banner rather than a cover, because the links and
+        // the phone number under it are the part that still works and taking
+        // the page away would take those with it.
+        function tellReader() {
+          if (told) return;
+          told = true;
+          var box = document.createElement('div');
+          box.setAttribute('role', 'status');
+          box.style.cssText =
+            'box-sizing:border-box;padding:16px 20px;border-bottom:1px solid ' +
+            'var(--line,#d4d4d8);background:var(--surface,#ffffff);' +
+            'color:var(--ink,#18181b);font:400 15px/1.5 system-ui,sans-serif;';
+          var heading = document.createElement('strong');
+          heading.style.cssText = 'display:block;font-weight:600;';
+          heading.appendChild(document.createTextNode('Your Browser Is Out of Date'));
+          var body = document.createElement('span');
+          body.style.cssText = 'display:block;color:var(--ink-muted,#52525b);';
+          body.appendChild(
+            document.createTextNode(
+              'The site needs a newer browser to run. Everything on this page still reads, and the contact details on it still reach us.'
+            )
+          );
+          box.appendChild(heading);
+          box.appendChild(body);
+          function place() {
+            if (document.body) document.body.insertBefore(box, document.body.firstChild);
+          }
+          if (document.body) place();
+          else document.addEventListener('DOMContentLoaded', place);
+        }
+
+        // A file the engine could not compile fires no error event on its tag,
+        // so this arrives at the window instead, naming the entry as its
+        // source. Retrying and reloading are both spent here rather than on it.
+        function parseFailure(event) {
+          var src = entrySrc();
+          if (!src) return false;
+          var where = String(event.filename || '').split('?')[0];
+          if (where.length < src.length || where.slice(-src.length) !== src) return false;
+          var error = event.error;
+          if (error) return error instanceof SyntaxError || error.name === 'SyntaxError';
+          return String(event.message || '').indexOf('SyntaxError') > -1;
+        }
+
         function answer() {
-          if (arrived) return;
+          if (arrived || unparsable) return;
           var src = entrySrc();
           if (!src || attempts >= RETRY_LIMIT) {
             reload();
@@ -481,7 +560,14 @@
           'error',
           function (event) {
             var target = event.target;
-            if (!target || target === window || !target.tagName) return;
+            if (!target || target === window || !target.tagName) {
+              if (parseFailure(event)) {
+                unparsable = true;
+                answering = true;
+                if (engineRefusesSyntax()) tellReader();
+              }
+              return;
+            }
             if (target.tagName.toLowerCase() !== 'script') return;
             if ((target.type || '') !== 'module') return;
             answering = true;
