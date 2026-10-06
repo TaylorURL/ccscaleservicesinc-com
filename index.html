@@ -213,6 +213,42 @@
             return held.slice();
           },
         };
+        // A sample of the syntax every script in this build is emitted at, the
+        // floor vite.config.js names, handed to the engine that is about to be
+        // asked to run it. An engine that will not compile this cannot run any
+        // build of this site, so a parse failure in front of it describes the
+        // browser rather than the build. The answer cannot change inside a
+        // page, so it is compiled once. The entry guard further down the
+        // document reads the same answer, because two copies of this sample
+        // could drift apart and then the two halves would disagree about the
+        // same visitor.
+        var floorRefused = null;
+        function engineBelowFloor() {
+          if (floorRefused !== null) return floorRefused;
+          try {
+            new Function(
+              'class P { #v = 1; static {} get v() { return this.#v } }' +
+                'return function (a) { var b = a?.b ?? 0; b ??= 1; return b + new P().v; }'
+            );
+            floorRefused = false;
+          } catch (error) {
+            // A page whose policy refuses Function throws something other than
+            // a SyntaxError, and a locked-down page is not an engine that
+            // cannot read the language.
+            floorRefused = error instanceof SyntaxError;
+          }
+          return floorRefused;
+        }
+        window.__cissEngineBelowFloor = engineBelowFloor;
+        // A script that fails to compile reports no frames, because nothing
+        // ran. That is all this looks for; which script it was does not matter
+        // once the engine has said it cannot read the language the whole build
+        // is written in.
+        function parseFailure(event) {
+          var error = event.error;
+          if (error) return error instanceof SyntaxError || error.name === 'SyntaxError';
+          return String(event.message || '').indexOf('SyntaxError') > -1;
+        }
         function report(kind, message, stack) {
           hold(kind, message, stack);
           if (sent >= 10) return; // a page stuck in an error loop stops at ten
@@ -298,6 +334,17 @@
                     (event.target.src || event.target.href || '')
                 );
                 setTimeout(flushHeldAssets, HOLD_MS);
+              } else if (parseFailure(event) && engineBelowFloor()) {
+                // The engine has just refused the syntax the whole build is
+                // emitted at, so this bundle never had a chance to run and
+                // nothing in it is at fault. The reader gets the notice the
+                // guard below puts up; this stays on the page for a live
+                // console and is not sent, because a browser older than the
+                // site's floor is not news and filing it buries the reports
+                // that are. A build that genuinely will not parse fails on the
+                // engines that do compile the floor, which is nearly every
+                // visitor, and those still report it.
+                hold('uncaught', event.message, event.error && event.error.stack);
               } else {
                 report('uncaught', event.message, event.error && event.error.stack);
               }
@@ -409,7 +456,11 @@
          Nothing here quiets the report. The reporter above has already sent
          'Failed to load script' by the time any of this runs, and it stays
          sent: a recovery that hid the failure would buy silence at the cost of
-         ever hearing about it again. -->
+         ever hearing about it again. The one report it holds back is the parse
+         failure it has proved the engine owed nothing - the same engine that
+         gets the notice below - and it holds that one back for the same
+         reason, because a report that arrives on every visit from a browser
+         older than the site is what hides the ones worth reading. -->
     <script>
       (function () {
         var MARK = 'ciss.entry-refresh.v1';
@@ -472,22 +523,14 @@
           window.location.reload();
         }
 
-        // A sample of the syntax the bundle is built out of, handed to the
-        // engine that is about to be asked to run it. vite.config.js states the
-        // floor; this is what that floor buys, so an engine that will not
-        // compile it cannot run any build of this site. A page whose policy
-        // refuses Function throws something other than a SyntaxError, and a
-        // locked-down page is not an engine that cannot read the language.
+        // Whether this engine can compile the syntax the bundle is built out
+        // of. The probe lives with the reporter at the top of this document,
+        // which needs the same answer about the same visitor a moment earlier,
+        // and both read it from there so neither can be told something the
+        // other was not.
         function engineRefusesSyntax() {
-          try {
-            new Function(
-              'class P { #v = 1; static {} get v() { return this.#v } }' +
-                'return function (a) { var b = a?.b ?? 0; b ??= 1; return b + new P().v; }'
-            );
-            return false;
-          } catch (error) {
-            return error instanceof SyntaxError;
-          }
+          var probe = window.__cissEngineBelowFloor;
+          return typeof probe === 'function' ? probe() : false;
         }
 
         // The shell below is a finished first screen, so an engine that cannot
