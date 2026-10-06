@@ -118,7 +118,9 @@ export default function Header() {
                 label={item.label}
                 open={openPanel === item.key}
                 onOpen={() => setOpenPanel(item.key)}
-                onClose={closePanel}
+                // Closes this panel only, so a close still pending from the
+                // panel the pointer just left cannot shut the one it moved to.
+                onClose={() => setOpenPanel((current) => (current === item.key ? null : current))}
               >
                 {item.key === 'services' ? (
                   <ServicesPanel onNavigate={closePanel} />
@@ -263,13 +265,31 @@ function UtilityBar() {
   );
 }
 
+/**
+ * How long the pointer may be outside the trigger and its panel before the
+ * panel closes. A path from a trigger down to a wide panel rarely runs
+ * straight, and a corner cut on the way would otherwise shut the panel before
+ * the pointer reaches it.
+ */
+const CLOSE_DELAY_MS = 200;
+
 function NavPanel({ label, open, onOpen, onClose, children }) {
   const triggerRef = useRef(null);
+  const closeTimer = useRef(null);
+  const cancelClose = () => clearTimeout(closeTimer.current);
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(onClose, CLOSE_DELAY_MS);
+  };
+  useEffect(() => cancelClose, []);
   return (
     <div
       className="relative"
-      onMouseEnter={onOpen}
-      onMouseLeave={onClose}
+      onMouseEnter={() => {
+        cancelClose();
+        onOpen();
+      }}
+      onMouseLeave={scheduleClose}
       onFocus={onOpen}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) onClose();
@@ -295,12 +315,17 @@ function NavPanel({ label, open, onOpen, onClose, children }) {
         // page of type, and anything showing through puts the two on top of
         // each other at the moment a visitor is reading to choose. The width
         // is capped against the viewport so a centred panel cannot run off
-        // the screen at the narrow end of the desktop range.
-        <div
-          role="menu"
-          className="drop-in absolute left-1/2 top-full z-dropdown mt-2 w-[44rem] max-w-[calc(100vw-2.5rem)] -translate-x-1/2 rounded-lg border border-line-inverse bg-[color:var(--surface-inverse)] shadow-card-hover"
-        >
-          {children}
+        // the screen at the narrow end of the desktop range. The space between
+        // the trigger and the panel is padding on a wrapper rather than a
+        // margin on the panel, so the pointer crossing it is still inside the
+        // element that holds the panel open.
+        <div className="absolute left-1/2 top-full z-dropdown w-[44rem] max-w-[calc(100vw-2.5rem)] -translate-x-1/2 pt-2">
+          <div
+            role="menu"
+            className="drop-in rounded-lg border border-line-inverse bg-[color:var(--surface-inverse)] shadow-card-hover"
+          >
+            {children}
+          </div>
         </div>
       )}
     </div>
