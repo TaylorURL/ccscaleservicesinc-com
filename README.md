@@ -3,7 +3,7 @@
 <p align="center">Website for a scale calibration, repair and parts shop in Huffman, Texas.</p>
 <p align="center"><a href="https://ccscaleservices.com">ccscaleservices.com</a></p>
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2026.41.1-2850a0?style=for-the-badge" alt="Version 2026.41.1" />
+  <img src="https://img.shields.io/badge/version-2026.44.0-2850a0?style=for-the-badge" alt="Version 2026.44.0" />
 </p>
 
 Compound Industrial Scale Services Inc calibrates, repairs, installs and maintains industrial scales, and sells the parts that go in them. The site lists the services and a parts catalog. Customers can build a list of the parts they need and send it to sales as a quote request.
