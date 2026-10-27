@@ -8,7 +8,8 @@
 
 Compound Industrial Scale Services Inc calibrates, repairs, installs and maintains industrial scales, and sells the parts that go in them. The site lists the services and a parts catalog. Customers can build a list of the parts they need and send it to sales as a quote request.
 
-## What's on the site
+<details>
+<summary>What's on the site</summary>
 
 - Five services: calibration, repair and troubleshooting, preventive maintenance, installation and setup, and parts
 - A searchable parts catalog in six categories (load cells, indicators, junction boxes and cable, printers, test weights, mounting hardware), with a page for each part
@@ -16,7 +17,10 @@ Compound Industrial Scale Services Inc calibrates, repairs, installs and maintai
 - Quote and service requests open as an email in the visitor's own mail app, so nothing is stored on a server
 - Light, dark and gray themes
 
-## Running it locally
+</details>
+
+<details>
+<summary>Running it locally</summary>
 
 You need Node 22.
 
@@ -30,12 +34,17 @@ Nothing has to be configured to run it. `.env.example` has one optional variable
 
 Services, parts, categories, FAQ and the business details (phone, emails, address) are plain JS files in `src/content/`. Adding a part is a new entry in `src/content/parts.js`.
 
+</details>
+
 ## Built with
 
 React 19, React Router 7, Vite 7 and Tailwind CSS 3. Hosted on Vercel.
 
-## License
+<details>
+<summary>License</summary>
 
 Proprietary. Copyright (c) 2026 TaylorURL LLC, all rights reserved. See [LICENSE.md](LICENSE.md).
+
+</details>
 
 Built and maintained by [TaylorURL](https://www.taylorurl.com).
