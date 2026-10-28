@@ -6,7 +6,7 @@ Website for a scale calibration, repair and parts shop in Huffman, Texas.
 
 [ccscaleservices.com](https://ccscaleservices.com)
 
-<img src="https://img.shields.io/badge/version-2026.44.0-2850a0?style=for-the-badge" alt="Version 2026.44.0" />
+<img src="https://img.shields.io/badge/version-2026.44.1-2850a0?style=for-the-badge" alt="Version 2026.44.1" />
 
 Services, a parts catalog and a quote list that works like a cart. No backend. A quote or service request goes out as an email built in the browser. Nothing stores customer details.
 
