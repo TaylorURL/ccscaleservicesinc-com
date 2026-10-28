@@ -6,7 +6,7 @@ Website for a scale calibration, repair and parts shop in Huffman, Texas.
 
 [ccscaleservices.com](https://ccscaleservices.com)
 
-<img src="https://img.shields.io/badge/version-2026.44.1-2850a0?style=for-the-badge" alt="Version 2026.44.1" />
+<img src="https://img.shields.io/badge/version-2026.44.2-2850a0?style=for-the-badge" alt="Version 2026.44.2" />
 
 Services, a parts catalog and a quote list that works like a cart. No backend. A quote or service request goes out as an email built in the browser. Nothing stores customer details.
 
@@ -31,7 +31,8 @@ Services, a parts catalog and a quote list that works like a cart. No backend. A
 
 </details>
 
-## Running it locally
+<details>
+<summary>Running it locally</summary>
 
 Needs Node 22.
 
@@ -44,6 +45,8 @@ npm run format:check
 ```
 
 Copy `.env.example` to `.env` and set `VITE_SITE_URL` to the origin you serve from. Canonical tags, Open Graph URLs, the sitemap and the structured data all use it. Unset, it falls back to the production origin.
+
+</details>
 
 ## Built with
 
