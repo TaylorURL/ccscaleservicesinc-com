@@ -6,7 +6,7 @@ Website for a scale calibration, repair and parts shop in Huffman, Texas.
 
 [ccscaleservices.com](https://ccscaleservices.com)
 
-<img src="https://img.shields.io/badge/version-2026.44.2-2850a0?style=for-the-badge" alt="Version 2026.44.2" />
+<img src="https://img.shields.io/badge/version-2026.44.3-2850a0?style=for-the-badge" alt="Version 2026.44.3" />
 
 There's no backend. Customers build a parts list like a cart, and when they send it the browser writes the email for them. Nothing about the customer gets stored anywhere.
 
