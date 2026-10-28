@@ -31,7 +31,8 @@ Services, a parts catalog and a quote list that works like a cart. No backend. A
 
 </details>
 
-## Running it locally
+<details>
+<summary>Running it locally</summary>
 
 Needs Node 22.
 
@@ -44,6 +45,8 @@ npm run format:check
 ```
 
 Copy `.env.example` to `.env` and set `VITE_SITE_URL` to the origin you serve from. Canonical tags, Open Graph URLs, the sitemap and the structured data all use it. Unset, it falls back to the production origin.
+
+</details>
 
 ## Built with
 
