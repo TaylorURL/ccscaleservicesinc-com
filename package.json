@@ -2,8 +2,8 @@
   "name": "ccscaleservicesinc-com",
   "private": true,
   "license": "UNLICENSED",
-  "version": "2026.44.0",
-  "description": "Compound Industrial Scale Services Inc: scale calibration, repair, and parts.",
+  "version": "2026.44.1",
+  "description": "Website for Compound Industrial Scale Services, scale calibration and repair in Huffman, TX",
   "type": "module",
   "scripts": {
     "dev": "vite",
