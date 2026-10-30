@@ -296,9 +296,59 @@
          */
         var HOLD_MS = 1500;
         var heldAssets = [];
+        // The names of module dependencies whose preload failed, and the number
+        // of times the entry guard re-inserted the bundle. Both are read when
+        // the held reports go out, which is after the guard has had its
+        // attempts: the retries run inside the first few hundred milliseconds
+        // and the hold is 1500, so one report carries the whole incident.
+        var failedDependencies = [];
+        var retriesSeen = 0;
+        function noteFailedDependency(href) {
+          var name = String(href || '').split('?')[0];
+          if (!name) return;
+          if (failedDependencies.indexOf(name) === -1 && failedDependencies.length < 5)
+            failedDependencies.push(name);
+        }
+        // The build writes one module script with no query on it, and the
+        // guard's retries all carry one, so this names the original entry. Both
+        // notes below belong to that one tag and to nothing else: a third-party
+        // tag further down the document failing is its own unrelated fault, and
+        // hanging the bundle's dependency on its report would send whoever
+        // reads it next after the wrong file.
+        function isEntryScript(url) {
+          try {
+            var tags = document.querySelectorAll('script[type="module"][src]');
+            for (var i = 0; i < tags.length; i += 1) {
+              var src = tags[i].getAttribute('src') || '';
+              if (src && src.indexOf('?') === -1)
+                return String(url).split('?')[0] === new URL(src, location.href).href;
+            }
+          } catch (ignored) {}
+          return false;
+        }
+        function describeAsset(item) {
+          var line = 'Failed to load ' + item.tag + ': ' + item.url;
+          if (item.tag !== 'script' || !isEntryScript(item.url)) return line;
+          // The entry bundle's error event fires for its own fetch and for any
+          // static import of it that fails, and carries nothing to say which.
+          // Without this the ticket names a file that answers fine and the
+          // search starts in the wrong place: #1000 to #1002 named the entry
+          // bundle for a dependency failure, and the entry was serving 200 the
+          // whole time.
+          if (failedDependencies.length)
+            line += ' (dependency that failed: ' + failedDependencies.join(', ') + ')';
+          if (retriesSeen)
+            line +=
+              ' (retried ' +
+              retriesSeen +
+              ' more time' +
+              (retriesSeen === 1 ? '' : 's') +
+              ', same result)';
+          return line;
+        }
         function flushHeldAssets() {
           var pending = heldAssets.splice(0, heldAssets.length);
-          for (var i = 0; i < pending.length; i += 1) report('resource', pending[i]);
+          for (var i = 0; i < pending.length; i += 1) report('resource', describeAsset(pending[i]));
         }
         window.addEventListener('ciss:build-refresh', function () {
           heldAssets.length = 0;
@@ -325,14 +375,30 @@
                   event.target.tagName.toLowerCase() === 'link' &&
                   (rel === 'preload' || rel === 'modulepreload' || rel === 'prefetch')
                 ) {
+                  // Not a ticket of its own, but a modulepreload is the only
+                  // place the name of a failed dependency is ever visible: the
+                  // import that fails a moment later fires its error on the
+                  // entry's own tag, so the report below would otherwise name
+                  // the entry for a file that arrived perfectly well.
+                  if (rel === 'modulepreload') noteFailedDependency(event.target.href || '');
                   return;
                 }
-                heldAssets.push(
-                  'Failed to load ' +
-                    event.target.tagName.toLowerCase() +
-                    ': ' +
-                    (event.target.src || event.target.href || '')
-                );
+                // A tag the entry guard inserted is this page retrying a bundle
+                // it has already reported. Counted into that report rather than
+                // filed beside it: three tickets for one incident is triage
+                // cost and no extra information, and the bare failure that
+                // started the recovery is still reported in full.
+                if (
+                  event.target.tagName.toLowerCase() === 'script' &&
+                  event.target.hasAttribute('data-ciss-retry')
+                ) {
+                  retriesSeen += 1;
+                  return;
+                }
+                heldAssets.push({
+                  tag: event.target.tagName.toLowerCase(),
+                  url: event.target.src || event.target.href || '',
+                });
                 setTimeout(flushHeldAssets, HOLD_MS);
               } else if (parseFailure(event) && engineBelowFloor()) {
                 // The engine has just refused the syntax the whole build is
@@ -518,7 +584,14 @@
         }
 
         function reload() {
-          if (unparsable || spent()) return;
+          if (unparsable) return;
+          if (spent()) {
+            // Spent either by the reload this tab has already had, or by a
+            // session store that cannot be read at all. Both end the automatic
+            // recovery, and both used to end it without saying anything.
+            tellReaderStalled();
+            return;
+          }
           spend();
           window.location.reload();
         }
@@ -538,7 +611,7 @@
         // nothing. This is a banner rather than a cover, because the links and
         // the phone number under it are the part that still works and taking
         // the page away would take those with it.
-        function tellReader() {
+        function tellReader(title, message, actionLabel) {
           if (told) return;
           told = true;
           var box = document.createElement('div');
@@ -549,21 +622,54 @@
             'color:var(--ink,#18181b);font:400 15px/1.5 system-ui,sans-serif;';
           var heading = document.createElement('strong');
           heading.style.cssText = 'display:block;font-weight:600;';
-          heading.appendChild(document.createTextNode('Your Browser Is Out of Date'));
+          heading.appendChild(document.createTextNode(title));
           var body = document.createElement('span');
           body.style.cssText = 'display:block;color:var(--ink-muted,#52525b);';
-          body.appendChild(
-            document.createTextNode(
-              'The site needs a newer browser to run. Everything on this page still reads, and the contact details on it still reach us.'
-            )
-          );
+          body.appendChild(document.createTextNode(message));
           box.appendChild(heading);
           box.appendChild(body);
+          if (actionLabel) {
+            // The automatic allowance is spent by the time this appears, which
+            // is what keeps a bundle that will never arrive from looping. A
+            // visitor asking for another go is not that loop, so the one thing
+            // left that could still work is offered rather than withheld.
+            var again = document.createElement('button');
+            again.type = 'button';
+            again.style.cssText =
+              'margin-top:10px;padding:8px 14px;border:1px solid var(--line,#d4d4d8);' +
+              'border-radius:6px;background:var(--surface,#ffffff);color:inherit;' +
+              'font:inherit;font-weight:600;cursor:pointer;';
+            again.appendChild(document.createTextNode(actionLabel));
+            again.addEventListener('click', function () {
+              release();
+              window.location.reload();
+            });
+            box.appendChild(again);
+          }
           function place() {
             if (document.body) document.body.insertBefore(box, document.body.firstChild);
           }
           if (document.body) place();
           else document.addEventListener('DOMContentLoaded', place);
+        }
+
+        // Every automatic answer has been given and the bundle still has not
+        // arrived. The answers #546 shipped do carry a visitor through a
+        // failure that passes - tested here, a dependency of the entry that
+        // fails three times is recovered by the second retry, because the fresh
+        // entry record fetches that dependency again. What it had no answer for
+        // is the failure that does not pass, and that is what came back: the
+        // retries and the reload are spent, the guard goes quiet, and the
+        // reader is left on the exact thing #546 named as the reason any of
+        // this exists - a shell that is styled, carries the headline and the
+        // phone number, responds to nothing, and says nowhere on it that
+        // anything failed. Being told is the part that was missing.
+        function tellReaderStalled() {
+          tellReader(
+            'This Page Did Not Finish Loading',
+            'Part of the page did not arrive, so some of it will not respond. Everything below still reads, and the phone number and email on it still reach us.',
+            'Try again'
+          );
         }
 
         // A file the engine could not compile fires no error event on its tag,
@@ -591,6 +697,10 @@
           tag.type = 'module';
           tag.crossOrigin = 'anonymous';
           tag.src = src + '?retry=' + attempts;
+          // Says to the reporter above that this tag is the page retrying a
+          // failure it has already filed, so the retries are counted into that
+          // one report instead of filing two more of their own.
+          tag.setAttribute('data-ciss-retry', String(attempts));
           // No onerror here: the listener below is on the window in capture
           // phase and already sees this tag fail. Handling it twice would spend
           // both retries on the first failure.
@@ -607,7 +717,11 @@
               if (parseFailure(event)) {
                 unparsable = true;
                 answering = true;
-                if (engineRefusesSyntax()) tellReader();
+                if (engineRefusesSyntax())
+                  tellReader(
+                    'Your Browser Is Out of Date',
+                    'The site needs a newer browser to run. Everything on this page still reads, and the contact details on it still reach us.'
+                  );
               }
               return;
             }
@@ -864,12 +978,13 @@
             <img
               src="/photos/weighbridge-service-1280.webp"
               srcset="
-                /photos/weighbridge-service-480.webp 480w,
-                /photos/weighbridge-service-640.webp 640w,
-                /photos/weighbridge-service-960.webp 960w,
+                /photos/weighbridge-service-480.webp   480w,
+                /photos/weighbridge-service-640.webp   640w,
+                /photos/weighbridge-service-960.webp   960w,
                 /photos/weighbridge-service-1280.webp 1280w,
                 /photos/weighbridge-service-1440.webp 1440w,
-                /photos/weighbridge-service-1600.webp 1600w"
+                /photos/weighbridge-service-1600.webp 1600w
+              "
               sizes="(max-width: 768px) 75vw, 100vw"
               alt="A technician in a safety vest steering a test-weight cart across a truck scale at an aggregate yard"
               width="1600"
