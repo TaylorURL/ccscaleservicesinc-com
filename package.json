@@ -2,7 +2,7 @@
   "name": "ccscaleservicesinc-com",
   "private": true,
   "license": "UNLICENSED",
-  "version": "2026.45.0",
+  "version": "2026.48.0",
   "description": "Website for Compound Industrial Scale Services, scale calibration and repair in Huffman, TX",
   "type": "module",
   "scripts": {
@@ -10,6 +10,7 @@
     "prebuild": "node scripts/generate-crawl-files.mjs",
     "build": "vite build && node scripts/first-screen.mjs",
     "preview": "vite preview",
+    "test": "node --test \"tests/**/*.test.js\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{js,jsx,json,css,md}\"",
